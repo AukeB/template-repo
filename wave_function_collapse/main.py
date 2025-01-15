@@ -27,7 +27,7 @@ def main():
         color_mapping=color_mapping,
     )
 
-    wfc_output = wfc.collapse()
+    collapsed_wave = wfc.collapse()
 
 if __name__ == "__main__":
     main()

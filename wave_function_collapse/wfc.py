@@ -22,7 +22,7 @@ class WaveFunctionCollapse():
         self.grid_size = grid_size
         self.tile_size = tile_size
         self.color_mapping = color_mapping
-        self.output_grid = [[None for _ in range(grid_size.width)] for _ in range(grid_size.height)]
+        self.wave = [[None for _ in range(grid_size.width)] for _ in range(grid_size.height)]
         self._check_tile_and_bitmap_size()
         self.tile_set, self.tile_weights, self.adjacency_rules = self.compute_tile_set_and_rules()
         self.entropy_grid = self.initialize_entropy()
@@ -142,7 +142,7 @@ class WaveFunctionCollapse():
 
             for y in range(self.grid_size.width):
                 for x in range(self.grid_size.height):
-                    if self.output_grid[y][x] is None:
+                    if self.wave[y][x] is None:
                         options = self.entropy_grid[y][x]
 
                         if len(options) < min_entropy:
@@ -167,16 +167,16 @@ class WaveFunctionCollapse():
             chosen_tile = rd.choices(choices, weights)[0]
             #print('chosen_tile')
             #print(chosen_tile)
-            self.output_grid[y][x] = chosen_tile
-            #print('self.output_grid')
-            #print(self.output_grid)
+            self.wave[y][x] = chosen_tile
+            #print('self.wave')
+            #print(self.wave)
             #print(self.color_mapping)
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     running = False
 
-            self.wfc_visualizer.visualize(self.output_grid)           
+            self.wfc_visualizer.visualize(self.wave)           
             #time.sleep(0.01)
             self.propagate(y, x, chosen_tile)
             #print('self.entropy_grid')
@@ -184,4 +184,4 @@ class WaveFunctionCollapse():
             #    print(hoi)
             i += 1
 
-        return self.output_grid
+        return self.wave

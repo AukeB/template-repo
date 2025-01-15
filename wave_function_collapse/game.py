@@ -50,7 +50,7 @@ class WFCVisualizer():
 
     def visualize(
         self,
-        output_grid
+        wave
     ):
         """ """
         #self.screen.fill((0, 0, 0))
@@ -59,7 +59,7 @@ class WFCVisualizer():
             for col_tile_idex in range(self.grid_dimensions.width):
                 x = self.margin_size + col_tile_idex * self.tile_size.width
                 y = self.margin_size + row_tile_idx * self.tile_size.height
-                tile_value = output_grid[row_tile_idx][col_tile_idex]
+                tile_value = wave[row_tile_idx][col_tile_idex]
                 tile_rect = pg.Rect(x, y, self.tile_size.width, self.tile_size.height)
                 
                 if tile_value is None:
