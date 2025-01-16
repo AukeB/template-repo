@@ -1,9 +1,7 @@
 """ """
-from collections import namedtuple
 from bitmap import BitmapUtils
-from wfc import WaveFunctionCollapse
-
-Grid = namedtuple('Grid', ['width', 'height'])
+from wfc import gridFunctionCollapse
+from constants import Size
 
 bitmap_utils = BitmapUtils()
 
@@ -13,21 +11,23 @@ def main():
         file_name='tile_1.xlsx',
     )
 
-    color_mapping = bitmap_utils.create_color_mapping(rgb_grid=bitmap)
-    bitmap = bitmap_utils.apply_color_mapping(rgb_grid=bitmap, color_mapping=color_mapping)
+    color_mapping = bitmap_utils.create_color_mapping(rgb_Size=bitmap)
+    bitmap = bitmap_utils.apply_color_mapping(rgb_Size=bitmap, color_mapping=color_mapping)
 
-    grid_dim = 50
-    grid_dimensions = Grid(grid_dim, grid_dim)
+    grid_dim = 60
     tile_dim = 3
+    
+    grid_dimensions = Size(grid_dim, grid_dim)
+    tile_dimensions = Size(tile_dim, tile_dim)
 
-    wfc = WaveFunctionCollapse(
+    wfc = gridFunctionCollapse(
         bitmap=bitmap,
-        grid_size=grid_dimensions,
-        tile_size=tile_dim,
+        grid_dimensions=grid_dimensions,
+        tile_dimensions=tile_dimensions,
         color_mapping=color_mapping,
     )
 
-    collapsed_wave = wfc.collapse()
+    wfc.collapse()
 
 if __name__ == "__main__":
     main()

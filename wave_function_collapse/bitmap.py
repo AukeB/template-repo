@@ -2,7 +2,7 @@ import os
 from openpyxl import load_workbook
 from collections import namedtuple
 
-Grid = namedtuple('Grid', ['width', 'height'])
+Size = namedtuple('Size', ['width', 'height'])
 
 class BitmapUtils:
     """ """
@@ -40,11 +40,11 @@ class BitmapUtils:
         relative_file_path = os.path.join(relative_dir_path, file_name)
         workbook = load_workbook(relative_file_path)
         sheet = workbook.active
-        grid_size_width, grid_size_height = self._obtain_bitmap_size(sheet=sheet)
+        Size_size_width, Size_size_height = self._obtain_bitmap_size(sheet=sheet)
         
         bitmap = []
         
-        for row in sheet.iter_rows(min_row=1, max_row=grid_size_width, min_col=1, max_col=grid_size_height):
+        for row in sheet.iter_rows(min_row=1, max_row=Size_size_width, min_col=1, max_col=Size_size_height):
             bitmap_row = []
 
             for cell in row:
@@ -56,23 +56,21 @@ class BitmapUtils:
         
         return bitmap
     
-    def create_color_mapping(self, rgb_grid):
+    def create_color_mapping(self, rgb_Size):
         """ """
         color_mapping = {}
         current_char = 'A'
         
-        for row in rgb_grid:
+        for row in rgb_Size:
             for rgb in row:
                 if rgb not in color_mapping:
                     color_mapping[rgb] = current_char
                     # Fails when the maximum number of codepoints within Unicode has been 
                     # reached (somewhere at 1.1M), so that's fine.
                     current_char = chr(ord(current_char) + 1)
-
-        #color_mapping[(252, 3, 211)] = 'Z'
         
         return color_mapping
     
-    def apply_color_mapping(self, rgb_grid, color_mapping):
+    def apply_color_mapping(self, rgb_Size, color_mapping):
         """ """
-        return [[color_mapping[rgb] for rgb in row] for row in rgb_grid]
+        return [[color_mapping[rgb] for rgb in row] for row in rgb_Size]
