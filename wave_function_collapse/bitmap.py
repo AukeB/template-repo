@@ -56,12 +56,12 @@ class BitmapUtils:
         
         return bitmap
     
-    def create_color_mapping(self, rgb_Size):
+    def create_color_mapping(self, rgb_size):
         """ """
         color_mapping = {}
         current_char = 'A'
         
-        for row in rgb_Size:
+        for row in rgb_size:
             for rgb in row:
                 if rgb not in color_mapping:
                     color_mapping[rgb] = current_char
@@ -71,6 +71,6 @@ class BitmapUtils:
         
         return color_mapping
     
-    def apply_color_mapping(self, rgb_Size, color_mapping):
+    def apply_color_mapping(self, rgb_size, color_mapping):
         """ """
-        return [[color_mapping[rgb] for rgb in row] for row in rgb_Size]
+        return [[color_mapping[rgb] for rgb in row] for row in rgb_size]

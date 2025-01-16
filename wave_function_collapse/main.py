@@ -11,8 +11,8 @@ def main():
         file_name='tile_1.xlsx',
     )
 
-    color_mapping = bitmap_utils.create_color_mapping(rgb_Size=bitmap)
-    bitmap = bitmap_utils.apply_color_mapping(rgb_Size=bitmap, color_mapping=color_mapping)
+    color_mapping = bitmap_utils.create_color_mapping(rgb_size=bitmap)
+    bitmap = bitmap_utils.apply_color_mapping(rgb_size=bitmap, color_mapping=color_mapping)
 
     grid_dim = 60
     tile_dim = 3
