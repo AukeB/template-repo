@@ -13,16 +13,12 @@ class BitmapUtils:
         first_column_with_none = None
         first_row_with_none = None
 
-        for col_idx, cell in enumerate(
-            sheet[1], start=1
-        ):  # Access the first row
+        for col_idx, cell in enumerate(sheet[1], start=1):  # Access the first row
             if cell.value is None:
                 first_column_with_none = col_idx - 1
                 break
 
-        for row_idx, cell in enumerate(
-            sheet["A"], start=1
-        ):  # Access the first column
+        for row_idx, cell in enumerate(sheet["A"], start=1):  # Access the first column
             if cell.value is None:
                 first_row_with_none = row_idx - 1
                 break
@@ -46,9 +42,7 @@ class BitmapUtils:
         relative_file_path = os.path.join(relative_dir_path, file_name)
         workbook = load_workbook(relative_file_path)
         sheet = workbook.active
-        Size_size_width, Size_size_height = self._obtain_bitmap_size(
-            sheet=sheet
-        )
+        Size_size_width, Size_size_height = self._obtain_bitmap_size(sheet=sheet)
 
         bitmap = []
 

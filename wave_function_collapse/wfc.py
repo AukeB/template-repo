@@ -21,8 +21,7 @@ class gridFunctionCollapse:
         self.grid_dimensions = grid_dimensions
         self.tile_dimensions = tile_dimensions
         self.grid = [
-            [None for _ in range(grid_dimensions.width)]
-            for _ in range(grid_dimensions.height)
+            [None for _ in range(grid_dimensions.width)] for _ in range(grid_dimensions.height)
         ]
         self._check_tile_and_bitmap_dimensions()
         self.tile_weights, self.adjacency = self.compute_tile_set_and_rules()
@@ -44,9 +43,7 @@ class gridFunctionCollapse:
         # self.wfc_visualizer.show_adjacency(self.adjacency)
 
     def _check_tile_and_bitmap_dimensions(self):
-        min_bitmap_dim = min(
-            self.bitmap_dimensions.width, self.bitmap_dimensions.height
-        )
+        min_bitmap_dim = min(self.bitmap_dimensions.width, self.bitmap_dimensions.height)
         if (
             self.tile_dimensions.width > min_bitmap_dim
             or self.tile_dimensions.height > min_bitmap_dim
@@ -61,19 +58,13 @@ class gridFunctionCollapse:
         """ """
         # Use tuple (and not lists) because it will be used as a key in a dictionary.
         return tuple(
-            tuple(
-                self.bitmap[y + i][x + j]
-                for j in range(self.tile_dimensions.width)
-            )
+            tuple(self.bitmap[y + i][x + j] for j in range(self.tile_dimensions.width))
             for i in range(self.tile_dimensions.height)
         )
 
     def _compute_weights(self, tile_count):
         total_occurrences = sum(tile_count.values())
-        tile_weights = {
-            tile: count / total_occurrences
-            for tile, count in tile_count.items()
-        }
+        tile_weights = {tile: count / total_occurrences for tile, count in tile_count.items()}
         # tile_weights[(('A', 'A', 'A'), ('A', 'A', 'A'), ('A', 'A', 'A'))] = 1
         return tile_weights
 
@@ -86,12 +77,8 @@ class gridFunctionCollapse:
         adjacency = defaultdict(lambda: defaultdict(set))
         rows, cols = self.bitmap_dimensions.width, self.bitmap_dimensions.height
 
-        for y in range(
-            1, rows - self.tile_dimensions.height + 1 - 1, step_size
-        ):
-            for x in range(
-                1, cols - self.tile_dimensions.width + 1 - 1, step_size
-            ):
+        for y in range(1, rows - self.tile_dimensions.height + 1 - 1, step_size):
+            for x in range(1, cols - self.tile_dimensions.width + 1 - 1, step_size):
                 tile = self._extract_tile(x, y)
                 tile_count[tile] += 1
 
@@ -143,10 +130,7 @@ class gridFunctionCollapse:
         """ """
         for direction, (dy, dx) in self.directions.items():
             ny, nx = y + dy, x + dx
-            if (
-                0 <= nx < self.grid_dimensions.width
-                and 0 <= ny < self.grid_dimensions.height
-            ):
+            if 0 <= nx < self.grid_dimensions.width and 0 <= ny < self.grid_dimensions.height:
                 valid_tiles = self.adjacency.get(tile, {}).get(direction, set())
                 print("valid_tiles")
                 print(type(valid_tiles))

@@ -14,9 +14,7 @@ def main():
     )
 
     color_mapping = bitmap_utils.create_color_mapping(rgb_size=bitmap)
-    bitmap = bitmap_utils.apply_color_mapping(
-        rgb_size=bitmap, color_mapping=color_mapping
-    )
+    bitmap = bitmap_utils.apply_color_mapping(rgb_size=bitmap, color_mapping=color_mapping)
 
     grid_dim = 3
     tile_dim = 3
