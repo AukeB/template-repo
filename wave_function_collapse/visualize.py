@@ -56,7 +56,7 @@ class WFCVisualizer:
 
     def _draw_tile(self, tile_value, x, y):
         if tile_value is None:
-            # Handle cells in superposition if necessary
+            # Todo: Handle cells in superposition: Add the entropy grid as function argument and take average of rgb values.
             pass
         else:
             for cell_row_idx in range(self.tile_dimensions.height):
@@ -84,11 +84,6 @@ class WFCVisualizer:
                     (255, 255, 255),
                 )
                 self._draw_tile(tile_value, x, y)
-                print(
-                    row_tile_idx,
-                    col_tile_idx,
-                    len(entropy_grid[row_tile_idx][col_tile_idx]),
-                )
                 self.screen.blit(entropy_value, (x, y))
 
         pg.display.flip()

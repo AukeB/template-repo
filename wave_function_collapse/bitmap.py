@@ -7,7 +7,6 @@ Size = namedtuple("Size", ["width", "height"])
 
 class BitmapUtils:
     """ """
-
     def _obtain_bitmap_size(self, sheet):
         """Find the first column and row with None values in the given sheet."""
         first_column_with_none = None

@@ -56,7 +56,6 @@ class gridFunctionCollapse:
 
     def _extract_tile(self, x, y):
         """ """
-        # Use tuple (and not lists) because it will be used as a key in a dictionary.
         return tuple(
             tuple(self.bitmap[y + i][x + j] for j in range(self.tile_dimensions.width))
             for i in range(self.tile_dimensions.height)
@@ -65,7 +64,6 @@ class gridFunctionCollapse:
     def _compute_weights(self, tile_count):
         total_occurrences = sum(tile_count.values())
         tile_weights = {tile: count / total_occurrences for tile, count in tile_count.items()}
-        # tile_weights[(('A', 'A', 'A'), ('A', 'A', 'A'), ('A', 'A', 'A'))] = 1
         return tile_weights
 
     def compute_tile_set_and_rules(
@@ -99,11 +97,6 @@ class gridFunctionCollapse:
                         self._extract_tile(x, y + self.tile_dimensions.height)
                     )
 
-        # adjacency = {k: v for k, v in adjacency.items() if len(v.keys()) == 4}
-        print(len(tile_count.keys()))
-        # tile_count = {k: v for k, v in tile_count.items() if k in adjacency.keys()}
-        print(len(tile_count.keys()))
-
         tile_weights = self._compute_weights(tile_count)
 
         return tile_weights, adjacency
@@ -128,30 +121,13 @@ class gridFunctionCollapse:
         tile: str,
     ) -> None:
         """ """
+        self.wfc_visualizer.visualize(self.grid, self.entropy_grid)
+        time.sleep(10)
         for direction, (dy, dx) in self.directions.items():
             ny, nx = y + dy, x + dx
             if 0 <= nx < self.grid_dimensions.width and 0 <= ny < self.grid_dimensions.height:
                 valid_tiles = self.adjacency.get(tile, {}).get(direction, set())
-                print("valid_tiles")
-                print(type(valid_tiles))
-                print(valid_tiles)
-                print(len(valid_tiles))
-                # print(len(self.adjacency[tile].keys()))
-
-                for hoi in valid_tiles:
-                    hey = True if hoi in self.entropy_grid[ny][nx] else False
-                    print(hey)
-
                 self.entropy_grid[ny][nx] &= valid_tiles
-                print("entropy")
-                print(type(self.entropy_grid[ny][nx]))
-                print(self.entropy_grid[ny][nx])
-                print(len(self.entropy_grid[ny][nx]))
-                print("\n\n\n")
-
-        # if len(self.entropy_grid[ny][nx]) == 0:
-        #     self.entropy_grid[ny][nx] = {(('A', 'A', 'A'), ('A', 'A', 'A'), ('A', 'A', 'A'))}
-        # self.entropy_grid[ny][nx] &= valid_tiles
 
     def collapse(
         self,
@@ -170,40 +146,13 @@ class gridFunctionCollapse:
                             min_entropy = len(options)
                             min_cell = (y, x)
 
-            # if min_cell is None: # Necessary?
-            #    break
+            if min_cell is None: # Necessary?
+               break
 
-            # Collapse the weight function
+            # Collapse the wave function
             y, x = min_cell
-            # print('y, x')
-            # print(y,x)
-            # print(self.entropy_grid[y][x])
             choices = list(self.entropy_grid[y][x])
-            # print('choices')
-            # print(choices)
             weights = [self.tile_weights[tile] for tile in choices]
-            # print('weights')
-            # print(weights)
-            # print(choices, weights)
             chosen_tile = rd.choices(choices, weights)[0]
-            # print('chosen_tile')
-            # print(chosen_tile)
             self.grid[y][x] = chosen_tile
-            # print('self.grid')
-            # print(self.grid)
-            # print(self.color_mapping)
-
-            # time.sleep(1)
-
-            # time.sleep(0.01)
             self.propagate(y, x, chosen_tile)
-            self.wfc_visualizer.visualize(self.grid, self.entropy_grid)
-
-            # for event in pg.event.get():
-            #     if event.type == pg.QUIT:
-            #         break
-
-            time.sleep(2)
-            # print('self.entropy_grid')
-            # for hoi in self.entropy_grid:
-            #    print(hoi)

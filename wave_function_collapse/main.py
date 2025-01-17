@@ -6,10 +6,9 @@ from constants import Size
 
 bitmap_utils = BitmapUtils()
 
-
 def main():
     bitmap = bitmap_utils.read_bitmap_from_excel(
-        relative_dir_path="bitmaps",
+        relative_dir_path="wave_function_collapse/bitmaps",
         file_name="tile_1.xlsx",
     )
 
