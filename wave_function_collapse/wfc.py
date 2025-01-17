@@ -1,11 +1,12 @@
 import random as rd
+import copy
 import time
 from collections import Counter, defaultdict
 from visualize import WFCVisualizer
 from constants import Size
 
 
-class gridFunctionCollapse:
+class WaveFunctionCollapse:
     """ """
 
     def __init__(
@@ -109,7 +110,7 @@ class gridFunctionCollapse:
         # of the set of all posssible tile values.
         tile_set = set(self.tile_weights.keys())
         entropy = [
-            [tile_set for _ in range(self.grid_dimensions.width)]
+            [copy.deepcopy(tile_set) for _ in range(self.grid_dimensions.width)]
             for _ in range(self.grid_dimensions.height)
         ]
         return entropy
@@ -121,13 +122,19 @@ class gridFunctionCollapse:
         tile: str,
     ) -> None:
         """ """
-        self.wfc_visualizer.visualize(self.grid, self.entropy_grid)
-        time.sleep(10)
         for direction, (dy, dx) in self.directions.items():
             ny, nx = y + dy, x + dx
-            if 0 <= nx < self.grid_dimensions.width and 0 <= ny < self.grid_dimensions.height:
+            if 0 <= nx < self.grid_dimensions.width and 0 <= ny < self.grid_dimensions.height and self.grid[ny][nx] is None:
+                print(direction)
+                for i, hoi in enumerate(self.entropy_grid):
+                    for j, hoi in enumerate(hoi):
+                        print(i, j, len(hoi))
+
+                self.wfc_visualizer.visualize(self.grid, self.entropy_grid)
+                time.sleep(1)
                 valid_tiles = self.adjacency.get(tile, {}).get(direction, set())
                 self.entropy_grid[ny][nx] &= valid_tiles
+
 
     def collapse(
         self,
