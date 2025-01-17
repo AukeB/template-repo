@@ -1,18 +1,21 @@
 """ """
+
 import math
 import pygame as pg
-from collections import namedtuple
+import random as rd
 from constants import Size, screen_resolution
 
-class WFCVisualizer():
+
+class WFCVisualizer:
     """ """
+
     def __init__(
         self,
         grid_dimensions,
         tile_dimensions,
         color_mapping: dict[tuple[int, int, int], str],
         screen_resolution: tuple[int, int] = screen_resolution,
-        margin_size: int=20,
+        margin_size: int = 20,
     ) -> None:
         """ """
         pg.init()
@@ -27,100 +30,162 @@ class WFCVisualizer():
         self.screen = pg.display.set_mode(
             (self.screen_size.width, self.screen_size.height)
         )
-    
+
     def _compute_tile_and_cell_size(
         self,
+        inner_margin: int = 0,
+        square_grid: bool = True,
     ) -> tuple[int, int]:
         """ """
         tile_size = Size(
-            # To always make the grid a square, use height in both dimensions.
-            # Assumes your screen resolution has a larger width than height
-            int((self.screen_size.height - 2*self.margin_size) / self.grid_dimensions.height),
-            int((self.screen_size.height - 2*self.margin_size) / self.grid_dimensions.height)
+            int(
+                (self.screen_size.height - 2 * self.margin_size)
+                / self.grid_dimensions.height
+            )
+            if square_grid
+            else int(
+                (self.screen_size.width - 2 * self.margin_size)
+                / self.grid_dimensions.width
+            ),
+            int(
+                (self.screen_size.height - 2 * self.margin_size)
+                / self.grid_dimensions.height
+            ),
         )
 
         cell_size = Size(
-            int(tile_size.width / self.tile_dimensions.width),
-            int(tile_size.height / self.tile_dimensions.height),
+            int((tile_size.width - inner_margin) / self.tile_dimensions.width),
+            int(
+                (tile_size.height - inner_margin) / self.tile_dimensions.height
+            ),
         )
 
         return tile_size, cell_size
 
-    def visualize(
-        self,
-        grid,
-        # entropy # for calculating supoer position colour of available cells.
-    ):
-        """ """
+    def _compute_tile_position(self, row_tile_idx, col_tile_idx):
+        x = self.margin_size + col_tile_idx * self.tile_size.width
+        y = self.margin_size + row_tile_idx * self.tile_size.height
+        return x, y
+
+    def _draw_tile(self, tile_value, x, y):
+        if tile_value is None:
+            # Handle cells in superposition if necessary
+            pass
+        else:
+            for cell_row_idx in range(self.tile_dimensions.height):
+                for cell_col_idx in range(self.tile_dimensions.width):
+                    cell_value = self.color_mapping[
+                        tile_value[cell_col_idx][cell_row_idx]
+                    ]
+                    cell_rect = pg.Rect(
+                        x + cell_row_idx * self.cell_size.width,
+                        y + cell_col_idx * self.cell_size.height,
+                        self.cell_size.width,
+                        self.cell_size.height,
+                    )
+                    pg.draw.rect(self.screen, cell_value, cell_rect)
+
+    def visualize(self, grid, entropy_grid):
+        pg.font.init()
+        font = pg.font.SysFont("Arial", 36)
+
         for row_tile_idx in range(self.grid_dimensions.height):
-            for col_tile_idex in range(self.grid_dimensions.width):
-                x = self.margin_size + col_tile_idex * self.tile_size.width
-                y = self.margin_size + row_tile_idx * self.tile_size.height
-                tile_value = grid[row_tile_idx][col_tile_idex]
-                #tile_rect = pg.Rect(x, y, self.tile_size.width, self.tile_size.height)
-                
-                if tile_value is None:
-                    # Todo: write code for displaying cells in superposition.
-                    # However, it may make the program slower, if pygames draw function is slow.
-                    pass
-                else:
-                    for cell_row_idx in range(self.tile_dimensions.height):
-                        for cell_col_idx in range(self.tile_dimensions.width):
-                            cell_value = self.color_mapping[tile_value[cell_col_idx][cell_row_idx]]
+            for col_tile_idx in range(self.grid_dimensions.width):
+                x, y = self._compute_tile_position(row_tile_idx, col_tile_idx)
+                tile_value = grid[row_tile_idx][col_tile_idx]
+                entropy_value = font.render(
+                    str(len(entropy_grid[row_tile_idx][col_tile_idx])),
+                    True,
+                    (255, 255, 255),
+                )
+                self._draw_tile(tile_value, x, y)
+                print(
+                    row_tile_idx,
+                    col_tile_idx,
+                    len(entropy_grid[row_tile_idx][col_tile_idx]),
+                )
+                self.screen.blit(entropy_value, (x, y))
 
-                            cell_rect = pg.Rect(
-                                x + cell_row_idx*self.cell_size.width,
-                                y + cell_col_idx*self.cell_size.height,
-                                self.cell_size.width,
-                                self.cell_size.height
-                            )
-
-                            pg.draw.rect(self.screen, cell_value, cell_rect)
-
-            pg.display.flip()
+        pg.display.flip()
 
     def show_unique_tiles(self, tile_weights):
-        """ """
-        inner_margin_size = 10
+        # todo: show tile weight next to or in the tile.
         tiles = list(tile_weights.keys())
         for tile in tiles:
-            for row in tile:
-                print(row)
-            print('')
-        print('\n')
-
+            print(tile)
         next_square_number = math.ceil(math.sqrt(len(tiles)))
         self.grid_dimensions = Size(next_square_number, next_square_number)
-        self.tile_size, self.cell_size = self._compute_tile_and_cell_size()
+        self.tile_size, self.cell_size = self._compute_tile_and_cell_size(
+            inner_margin=3
+        )
 
         for row_tile_idx in range(self.grid_dimensions.height):
-            for col_tile_idex in range(self.grid_dimensions.width):
-                x = self.margin_size + col_tile_idex * self.tile_size.width
-                y = self.margin_size + row_tile_idx * self.tile_size.height
-                index = row_tile_idx*self.grid_dimensions.height + col_tile_idex
-                if index < len(tiles):
-                    tile_value = tiles[index]
-                    #tile_rect = pg.Rect(x, y, self.tile_size.width, self.tile_size.height)
-                    
-                    if tile_value is None:
-                        # Todo: write code for displaying cells in superposition.
-                        pass
-                    else:
-                        for cell_row_idx in range(self.tile_dimensions.height):
-                            for cell_col_idx in range(self.tile_dimensions.width):
-                                cell_value = self.color_mapping[tile_value[cell_col_idx][cell_row_idx]]
+            for col_tile_idx in range(self.grid_dimensions.width):
+                x, y = self._compute_tile_position(row_tile_idx, col_tile_idx)
+                index = (
+                    row_tile_idx * self.grid_dimensions.height + col_tile_idx
+                )
+                tile_value = tiles[index] if index < len(tiles) else None
+                self._draw_tile(tile_value, x, y)
 
-                                cell_rect = pg.Rect(
-                                    x + cell_row_idx*self.cell_size.width,
-                                    y + cell_col_idx*self.cell_size.height,
-                                    self.cell_size.width,
-                                    self.cell_size.height
-                                )
+        pg.display.flip()
 
-                                pg.draw.rect(self.screen, cell_value, cell_rect)
+        while True:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    break
 
-                pg.display.flip()
-        
+    def show_adjacency(
+        self,
+        adjacency: dict,
+    ) -> None:
+        """ """
+        pg.font.init()
+        font = pg.font.SysFont("Arial", 36)
+        grid_height = 7
+
+        key_to_check = rd.choice(list(adjacency.keys()))
+        key_to_check = (("B", "A", "A"), ("B", "A", "A"), ("B", "A", "A"))
+
+        grid_height = max(
+            (
+                len(value)
+                for value in adjacency[key_to_check].values()
+                if len(value) > grid_height
+            ),
+            default=grid_height,
+        )
+        self.grid_dimensions = Size(
+            self.screen_size.width // (self.screen_size.height // grid_height),
+            grid_height,
+        )
+        self.tile_size, self.cell_size = self._compute_tile_and_cell_size(
+            inner_margin=3
+        )
+
+        # Draw center tile.
+        x, y = self._compute_tile_position(
+            (self.grid_dimensions.height - 1) / 2, 0
+        )
+        self._draw_tile(key_to_check, x, y)
+
+        # Draw directions.
+        for i, direction in enumerate(adjacency[key_to_check].keys()):
+            x, y = self._compute_tile_position(i * 2 + (1 / 3), 2)
+            text = font.render(direction.capitalize(), True, (255, 255, 255))
+            self.screen.blit(text, (x, y))
+
+            for j, neighbour_tile in enumerate(
+                adjacency[key_to_check][direction]
+            ):
+                x, y = self._compute_tile_position(i * 2, 4 + j)
+                try:
+                    self._draw_tile(neighbour_tile, x, y)
+                except:
+                    pass
+
+        pg.display.flip()
+
         while True:
             for event in pg.event.get():
                 if event.type == pg.QUIT:

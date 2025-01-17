@@ -1,12 +1,13 @@
-import pygame as pg
 import random as rd
 import time
 from collections import Counter, defaultdict
 from visualize import WFCVisualizer
 from constants import Size
 
-class gridFunctionCollapse():
+
+class gridFunctionCollapse:
     """ """
+
     def __init__(
         self,
         bitmap: list[list[str]],
@@ -16,30 +17,43 @@ class gridFunctionCollapse():
     ) -> None:
         """ """
         self.bitmap = bitmap
-        self.bitmap_dimensions = Size(len(self.bitmap), len(self.bitmap[0]))
+        self.bitmap_dimensions = Size(len(self.bitmap[0]), len(self.bitmap))
         self.grid_dimensions = grid_dimensions
         self.tile_dimensions = tile_dimensions
-        self.grid = [[None for _ in range(grid_dimensions.width)] for _ in range(grid_dimensions.height)]
+        self.grid = [
+            [None for _ in range(grid_dimensions.width)]
+            for _ in range(grid_dimensions.height)
+        ]
         self._check_tile_and_bitmap_dimensions()
-        self.tile_weights, self.adjacency_rules = self.compute_tile_set_and_rules()
+        self.tile_weights, self.adjacency = self.compute_tile_set_and_rules()
         self.entropy_grid = self.initialize_entropy()
-        self.directions = {"up": (-1, 0), "down": (1, 0), "left": (0, -1), "right": (0, 1)}
+        self.directions = {
+            "up": (-1, 0),
+            "down": (1, 0),
+            "left": (0, -1),
+            "right": (0, 1),
+        }
 
         self.wfc_visualizer = WFCVisualizer(
             grid_dimensions=self.grid_dimensions,
             tile_dimensions=tile_dimensions,
-            color_mapping=color_mapping
+            color_mapping=color_mapping,
         )
 
-        #self.wfc_visualizer.show_unique_tiles(self.tile_weights)
-        # visualize adjacency next.
+        # self.wfc_visualizer.show_unique_tiles(self.tile_weights)
+        # self.wfc_visualizer.show_adjacency(self.adjacency)
 
     def _check_tile_and_bitmap_dimensions(self):
-        min_bitmap_dim = min(self.bitmap_dimensions.width, self.bitmap_dimensions.height)
-        if self.tile_dimensions.width > min_bitmap_dim or self.tile_dimensions.height > min_bitmap_dim:
+        min_bitmap_dim = min(
+            self.bitmap_dimensions.width, self.bitmap_dimensions.height
+        )
+        if (
+            self.tile_dimensions.width > min_bitmap_dim
+            or self.tile_dimensions.height > min_bitmap_dim
+        ):
             raise ValueError(
-                f"tile_size ({self.tile_size}) must be smaller than or equal to the " 
-                f"minimum dimension of the bitmap (width: {self.bitmap_dimensions.width}, " 
+                f"tile_size ({self.tile_size}) must be smaller than or equal to the "
+                f"minimum dimension of the bitmap (width: {self.bitmap_dimensions.width}, "
                 f"height: {self.bitmap_dimensions.height})"
             )
 
@@ -47,38 +61,61 @@ class gridFunctionCollapse():
         """ """
         # Use tuple (and not lists) because it will be used as a key in a dictionary.
         return tuple(
-            tuple(self.bitmap[y + i][x + j] for j in range(self.tile_dimensions.width))
+            tuple(
+                self.bitmap[y + i][x + j]
+                for j in range(self.tile_dimensions.width)
+            )
             for i in range(self.tile_dimensions.height)
         )
-    
+
     def _compute_weights(self, tile_count):
         total_occurrences = sum(tile_count.values())
-        tile_weights = {tile: count / total_occurrences for tile, count in tile_count.items()}
-        #tile_weights[(('A', 'A', 'A'), ('A', 'A', 'A'), ('A', 'A', 'A'))] = 1
+        tile_weights = {
+            tile: count / total_occurrences
+            for tile, count in tile_count.items()
+        }
+        # tile_weights[(('A', 'A', 'A'), ('A', 'A', 'A'), ('A', 'A', 'A'))] = 1
         return tile_weights
 
     def compute_tile_set_and_rules(
         self,
-        step_size: int=1,
+        step_size: int = 1,
     ) -> None:
         """ """
         tile_count = Counter()
         adjacency = defaultdict(lambda: defaultdict(set))
         rows, cols = self.bitmap_dimensions.width, self.bitmap_dimensions.height
 
-        for y in range(0, rows - self.tile_dimensions.height + 1, step_size):
-            for x in range(0, cols - self.tile_dimensions.width + 1, step_size):
+        for y in range(
+            1, rows - self.tile_dimensions.height + 1 - 1, step_size
+        ):
+            for x in range(
+                1, cols - self.tile_dimensions.width + 1 - 1, step_size
+            ):
                 tile = self._extract_tile(x, y)
                 tile_count[tile] += 1
 
                 if x >= self.tile_dimensions.width:
-                    adjacency[tile]["left"].add(self._extract_tile(x-self.tile_dimensions.width, y))
-                if x <= cols - 2*self.tile_dimensions.width:
-                    adjacency[tile]["right"].add(self._extract_tile(x+self.tile_dimensions.width, y))
+                    adjacency[tile]["left"].add(
+                        self._extract_tile(x - self.tile_dimensions.width, y)
+                    )
+                if x <= cols - 2 * self.tile_dimensions.width:
+                    adjacency[tile]["right"].add(
+                        self._extract_tile(x + self.tile_dimensions.width, y)
+                    )
                 if y >= self.tile_dimensions.height:
-                    adjacency[tile]["up"].add(self._extract_tile(x, y-self.tile_dimensions.height))
-                if y <= rows - 2*self.tile_dimensions.height:
-                    adjacency[tile]["down"].add(self._extract_tile(x, y+self.tile_dimensions.height))
+                    adjacency[tile]["up"].add(
+                        self._extract_tile(x, y - self.tile_dimensions.height)
+                    )
+                if y <= rows - 2 * self.tile_dimensions.height:
+                    adjacency[tile]["down"].add(
+                        self._extract_tile(x, y + self.tile_dimensions.height)
+                    )
+
+        # adjacency = {k: v for k, v in adjacency.items() if len(v.keys()) == 4}
+        print(len(tile_count.keys()))
+        # tile_count = {k: v for k, v in tile_count.items() if k in adjacency.keys()}
+        print(len(tile_count.keys()))
 
         tile_weights = self._compute_weights(tile_count)
 
@@ -88,11 +125,15 @@ class gridFunctionCollapse():
         self,
     ) -> list[list[str]]:
         """ """
-        # Initially, every tile is in a superposition consisting of the set of all posssible tile values.
+        # Initially, every tile is in a superposition of all elements
+        # of the set of all posssible tile values.
         tile_set = set(self.tile_weights.keys())
-        entropy = [[tile_set for _ in range(self.grid_dimensions.width)] for _ in range(self.grid_dimensions.height)]
+        entropy = [
+            [tile_set for _ in range(self.grid_dimensions.width)]
+            for _ in range(self.grid_dimensions.height)
+        ]
         return entropy
-    
+
     def propagate(
         self,
         y: int,
@@ -102,21 +143,38 @@ class gridFunctionCollapse():
         """ """
         for direction, (dy, dx) in self.directions.items():
             ny, nx = y + dy, x + dx
-            if 0 <= nx < self.grid_dimensions.width and 0 <= ny < self.grid_dimensions.height:
-                valid_tiles = self.adjacency_rules.get(tile, {}).get(direction, set())
+            if (
+                0 <= nx < self.grid_dimensions.width
+                and 0 <= ny < self.grid_dimensions.height
+            ):
+                valid_tiles = self.adjacency.get(tile, {}).get(direction, set())
+                print("valid_tiles")
+                print(type(valid_tiles))
+                print(valid_tiles)
+                print(len(valid_tiles))
+                # print(len(self.adjacency[tile].keys()))
 
-                if len(valid_tiles) == 0:
-                    self.entropy_grid[ny][nx] = {(('A', 'A', 'A'), ('A', 'A', 'A'), ('A', 'A', 'A'))}
-                else:
-                    self.entropy_grid[ny][nx] = valid_tiles
-                # self.entropy_grid[ny][nx] = valid_tiles
+                for hoi in valid_tiles:
+                    hey = True if hoi in self.entropy_grid[ny][nx] else False
+                    print(hey)
+
+                self.entropy_grid[ny][nx] &= valid_tiles
+                print("entropy")
+                print(type(self.entropy_grid[ny][nx]))
+                print(self.entropy_grid[ny][nx])
+                print(len(self.entropy_grid[ny][nx]))
+                print("\n\n\n")
+
+        # if len(self.entropy_grid[ny][nx]) == 0:
+        #     self.entropy_grid[ny][nx] = {(('A', 'A', 'A'), ('A', 'A', 'A'), ('A', 'A', 'A'))}
+        # self.entropy_grid[ny][nx] &= valid_tiles
 
     def collapse(
         self,
     ) -> None:
         """ """
         while True:
-            min_entropy = float('inf')
+            min_entropy = float("inf")
             min_cell = None
 
             for y in range(self.grid_dimensions.width):
@@ -127,39 +185,41 @@ class gridFunctionCollapse():
                         if len(options) < min_entropy:
                             min_entropy = len(options)
                             min_cell = (y, x)
-            
+
             # if min_cell is None: # Necessary?
             #    break
 
             # Collapse the weight function
             y, x = min_cell
-            #print('y, x')
-            #print(y,x)
-            #print(self.entropy_grid[y][x])
+            # print('y, x')
+            # print(y,x)
+            # print(self.entropy_grid[y][x])
             choices = list(self.entropy_grid[y][x])
-            #print('choices')
-            #print(choices)
+            # print('choices')
+            # print(choices)
             weights = [self.tile_weights[tile] for tile in choices]
-            #print('weights')
-            #print(weights)
-            #print(choices, weights)
+            # print('weights')
+            # print(weights)
+            # print(choices, weights)
             chosen_tile = rd.choices(choices, weights)[0]
-            #print('chosen_tile')
-            #print(chosen_tile)
+            # print('chosen_tile')
+            # print(chosen_tile)
             self.grid[y][x] = chosen_tile
-            #print('self.grid')
-            #print(self.grid)
-            #print(self.color_mapping)
+            # print('self.grid')
+            # print(self.grid)
+            # print(self.color_mapping)
 
-            self.wfc_visualizer.visualize(self.grid)
-            #time.sleep(1)
-            
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    break
-            
-            #time.sleep(0.01)
+            # time.sleep(1)
+
+            # time.sleep(0.01)
             self.propagate(y, x, chosen_tile)
-            #print('self.entropy_grid')
-            #for hoi in self.entropy_grid:
+            self.wfc_visualizer.visualize(self.grid, self.entropy_grid)
+
+            # for event in pg.event.get():
+            #     if event.type == pg.QUIT:
+            #         break
+
+            time.sleep(2)
+            # print('self.entropy_grid')
+            # for hoi in self.entropy_grid:
             #    print(hoi)
