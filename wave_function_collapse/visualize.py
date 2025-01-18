@@ -73,6 +73,7 @@ class WFCVisualizer:
     def visualize(self, grid, entropy_grid):
         pg.font.init()
         font = pg.font.SysFont("Arial", 36)
+        #self.screen.fill((0, 0, 0))
 
         for row_tile_idx in range(self.grid_dimensions.height):
             for col_tile_idx in range(self.grid_dimensions.width):
@@ -84,15 +85,12 @@ class WFCVisualizer:
                     (255, 255, 255),
                 )
                 self._draw_tile(tile_value, x, y)
-                self.screen.blit(entropy_value, (x, y)) # Todo: clear screen when entropy_value has changed for (x, y)
-
-        pg.display.flip()
+                #self.screen.blit(entropy_value, (x, y))
+                pg.display.flip()
 
     def show_unique_tiles(self, tile_weights):
         # todo: show tile weight next to or in the tile.
         tiles = list(tile_weights.keys())
-        for tile in tiles:
-            print(tile)
         next_square_number = math.ceil(math.sqrt(len(tiles)))
         self.grid_dimensions = Size(next_square_number, next_square_number)
         self.tile_size, self.cell_size = self._compute_tile_and_cell_size(inner_margin=3)

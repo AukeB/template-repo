@@ -125,13 +125,8 @@ class WaveFunctionCollapse:
         for direction, (dy, dx) in self.directions.items():
             ny, nx = y + dy, x + dx
             if 0 <= nx < self.grid_dimensions.width and 0 <= ny < self.grid_dimensions.height and self.grid[ny][nx] is None:
-                print(direction)
-                for i, hoi in enumerate(self.entropy_grid):
-                    for j, hoi in enumerate(hoi):
-                        print(i, j, len(hoi))
-
                 self.wfc_visualizer.visualize(self.grid, self.entropy_grid)
-                time.sleep(1)
+                #time.sleep(2)
                 valid_tiles = self.adjacency.get(tile, {}).get(direction, set())
                 self.entropy_grid[ny][nx] &= valid_tiles
 
