@@ -2,6 +2,7 @@ import random as rd
 import copy
 import time
 from collections import Counter, defaultdict
+from tile import Tile
 from visualize import WFCVisualizer
 from constants import Size
 
@@ -25,8 +26,11 @@ class WaveFunctionCollapse:
             [None for _ in range(grid_dimensions.width)] for _ in range(grid_dimensions.height)
         ]
         self._check_tile_and_bitmap_dimensions()
-        self.tile_weights, self.adjacency = self.compute_tile_set_and_rules()
+        self.tile_weights = self.compute_tile_weights()
+        self.tile_set = set(self.tile_weights.keys())
+        self.adjacency = self.compute_neighbors()
         self.entropy_grid = self.initialize_entropy()
+
         self.directions = {
             "up": (-1, 0),
             "down": (1, 0),
@@ -57,50 +61,51 @@ class WaveFunctionCollapse:
 
     def _extract_tile(self, x, y):
         """ """
-        return tuple(
+        tile = tuple(
             tuple(self.bitmap[y + i][x + j] for j in range(self.tile_dimensions.width))
             for i in range(self.tile_dimensions.height)
         )
 
-    def _compute_weights(self, tile_count):
-        total_occurrences = sum(tile_count.values())
-        tile_weights = {tile: count / total_occurrences for tile, count in tile_count.items()}
-        return tile_weights
+        return Tile(tile)
 
-    def compute_tile_set_and_rules(
+    def compute_tile_weights(
         self,
-        step_size: int = 1,
     ) -> None:
         """ """
         tile_count = Counter()
-        adjacency = defaultdict(lambda: defaultdict(set))
-        rows, cols = self.bitmap_dimensions.width, self.bitmap_dimensions.height
+        final_row = self.bitmap_dimensions.height - self.tile_dimensions.height + 1
+        final_column = self.bitmap_dimensions.width - self.tile_dimensions.width + 1
+        total_occurrences = final_row * final_column
 
-        for y in range(1, rows - self.tile_dimensions.height + 1 - 1, step_size):
-            for x in range(1, cols - self.tile_dimensions.width + 1 - 1, step_size):
-                tile = self._extract_tile(x, y)
+        for y in range(final_row):
+            for x in range(final_column):
+                tile: Tile = self._extract_tile(x, y)
                 tile_count[tile] += 1
 
-                if x >= self.tile_dimensions.width:
-                    adjacency[tile]["left"].add(
-                        self._extract_tile(x - self.tile_dimensions.width, y)
-                    )
-                if x <= cols - 2 * self.tile_dimensions.width:
-                    adjacency[tile]["right"].add(
-                        self._extract_tile(x + self.tile_dimensions.width, y)
-                    )
-                if y >= self.tile_dimensions.height:
-                    adjacency[tile]["up"].add(
-                        self._extract_tile(x, y - self.tile_dimensions.height)
-                    )
-                if y <= rows - 2 * self.tile_dimensions.height:
-                    adjacency[tile]["down"].add(
-                        self._extract_tile(x, y + self.tile_dimensions.height)
-                    )
+        tile_weights = {tile: count / total_occurrences for tile, count in tile_count.items()}
+        return tile_weights
 
-        tile_weights = self._compute_weights(tile_count)
+    def compute_neighbors(
+        self,
+    ) -> defaultdict:
+        """ """
+        adjacency = defaultdict(lambda: defaultdict(set))
 
-        return tile_weights, adjacency
+        for tile in self.tile_set:
+            for other_tile in self.tile_set:
+                if tile == other_tile:
+                    continue
+
+                if tile.up == other_tile.down:
+                    adjacency[tile]["up"].add(other_tile)
+                if tile.down == other_tile.up:
+                    adjacency[tile]["down"].add(other_tile)
+                if tile.left == other_tile.right:
+                    adjacency[tile]["left"].add(other_tile)
+                if tile.right == other_tile.left:
+                    adjacency[tile]["right"].add(other_tile)
+
+        return adjacency
 
     def initialize_entropy(
         self,
@@ -108,9 +113,8 @@ class WaveFunctionCollapse:
         """ """
         # Initially, every tile is in a superposition of all elements
         # of the set of all posssible tile values.
-        tile_set = set(self.tile_weights.keys())
         entropy = [
-            [copy.deepcopy(tile_set) for _ in range(self.grid_dimensions.width)]
+            [copy.deepcopy(self.tile_set) for _ in range(self.grid_dimensions.width)]
             for _ in range(self.grid_dimensions.height)
         ]
         return entropy
@@ -124,12 +128,13 @@ class WaveFunctionCollapse:
         """ """
         for direction, (dy, dx) in self.directions.items():
             ny, nx = y + dy, x + dx
-            if 0 <= nx < self.grid_dimensions.width and 0 <= ny < self.grid_dimensions.height and self.grid[ny][nx] is None:
-                self.wfc_visualizer.visualize(self.grid, self.entropy_grid)
-                #time.sleep(2)
-                valid_tiles = self.adjacency.get(tile, {}).get(direction, set())
+            if (
+                0 <= nx < self.grid_dimensions.width
+                and 0 <= ny < self.grid_dimensions.height
+                and self.grid[ny][nx] is None
+            ):
+                valid_tiles = self.adjacency.get(tile.value, {}).get(direction, set())
                 self.entropy_grid[ny][nx] &= valid_tiles
-
 
     def collapse(
         self,
@@ -148,10 +153,12 @@ class WaveFunctionCollapse:
                             min_entropy = len(options)
                             min_cell = (y, x)
 
-            if min_cell is None: # Necessary?
-               break
+            if min_cell is None:  # Necessary?
+                break
 
             # Collapse the wave function
+            self.wfc_visualizer.visualize(self.grid)
+            time.sleep(1)
             y, x = min_cell
             choices = list(self.entropy_grid[y][x])
             weights = [self.tile_weights[tile] for tile in choices]

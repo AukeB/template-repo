@@ -54,14 +54,14 @@ class WFCVisualizer:
         y = self.margin_size + row_tile_idx * self.tile_size.height
         return x, y
 
-    def _draw_tile(self, tile_value, x, y):
-        if tile_value is None:
+    def _draw_tile(self, tile, x, y):
+        if tile is None:
             # Todo: Handle cells in superposition: Add the entropy grid as function argument and take average of rgb values.
             pass
         else:
             for cell_row_idx in range(self.tile_dimensions.height):
                 for cell_col_idx in range(self.tile_dimensions.width):
-                    cell_value = self.color_mapping[tile_value[cell_col_idx][cell_row_idx]]
+                    cell_value = self.color_mapping[tile.value[cell_col_idx][cell_row_idx]]
                     cell_rect = pg.Rect(
                         x + cell_row_idx * self.cell_size.width,
                         y + cell_col_idx * self.cell_size.height,
@@ -70,23 +70,15 @@ class WFCVisualizer:
                     )
                     pg.draw.rect(self.screen, cell_value, cell_rect)
 
-    def visualize(self, grid, entropy_grid):
-        pg.font.init()
-        font = pg.font.SysFont("Arial", 36)
-        #self.screen.fill((0, 0, 0))
-
+    def visualize(self, grid):
+        """ """
         for row_tile_idx in range(self.grid_dimensions.height):
             for col_tile_idx in range(self.grid_dimensions.width):
                 x, y = self._compute_tile_position(row_tile_idx, col_tile_idx)
                 tile_value = grid[row_tile_idx][col_tile_idx]
-                entropy_value = font.render(
-                    str(len(entropy_grid[row_tile_idx][col_tile_idx])),
-                    True,
-                    (255, 255, 255),
-                )
                 self._draw_tile(tile_value, x, y)
-                #self.screen.blit(entropy_value, (x, y))
-                pg.display.flip()
+
+        pg.display.flip()
 
     def show_unique_tiles(self, tile_weights):
         # todo: show tile weight next to or in the tile.
@@ -141,10 +133,10 @@ class WFCVisualizer:
             text = font.render(direction.capitalize(), True, (255, 255, 255))
             self.screen.blit(text, (x, y))
 
-            for j, neighbour_tile in enumerate(adjacency[key_to_check][direction]):
+            for j, neighbor_tile in enumerate(adjacency[key_to_check][direction]):
                 x, y = self._compute_tile_position(i * 2, 4 + j)
                 try:
-                    self._draw_tile(neighbour_tile, x, y)
+                    self._draw_tile(neighbor_tile, x, y)
                 except:
                     pass
 
