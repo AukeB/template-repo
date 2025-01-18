@@ -10,13 +10,13 @@ bitmap_utils = BitmapUtils()
 def main():
     bitmap = bitmap_utils.read_bitmap_from_excel(
         relative_dir_path="wave_function_collapse/bitmaps",
-        file_name="tile_1.xlsx",
+        file_name="flowers.xlsx",
     )
 
     color_mapping = bitmap_utils.create_color_mapping(rgb_size=bitmap)
     bitmap = bitmap_utils.apply_color_mapping(rgb_size=bitmap, color_mapping=color_mapping)
 
-    grid_dim = 10
+    grid_dim = 30
     tile_dim = 3
 
     grid_dimensions = Size(grid_dim, grid_dim)

@@ -44,8 +44,8 @@ class WaveFunctionCollapse:
             color_mapping=color_mapping,
         )
 
-        # self.wfc_visualizer.show_unique_tiles(self.tile_weights)
-        # self.wfc_visualizer.show_adjacency(self.adjacency)
+        #self.wfc_visualizer.show_unique_tiles(self.tile_weights)
+        #self.wfc_visualizer.show_adjacency(self.adjacency)
 
     def _check_tile_and_bitmap_dimensions(self):
         min_bitmap_dim = min(self.bitmap_dimensions.width, self.bitmap_dimensions.height)
@@ -93,9 +93,6 @@ class WaveFunctionCollapse:
 
         for tile in self.tile_set:
             for other_tile in self.tile_set:
-                if tile == other_tile:
-                    continue
-
                 if tile.up == other_tile.down:
                     adjacency[tile]["up"].add(other_tile)
                 if tile.down == other_tile.up:
@@ -111,8 +108,7 @@ class WaveFunctionCollapse:
         self,
     ) -> list[list[str]]:
         """ """
-        # Initially, every tile is in a superposition of all elements
-        # of the set of all posssible tile values.
+        # Initially, every tile is in a superposition of all posssible tile values.
         entropy = [
             [copy.deepcopy(self.tile_set) for _ in range(self.grid_dimensions.width)]
             for _ in range(self.grid_dimensions.height)
@@ -133,8 +129,11 @@ class WaveFunctionCollapse:
                 and 0 <= ny < self.grid_dimensions.height
                 and self.grid[ny][nx] is None
             ):
-                valid_tiles = self.adjacency.get(tile.value, {}).get(direction, set())
+                valid_tiles = self.adjacency.get(tile, {}).get(direction, set())
                 self.entropy_grid[ny][nx] &= valid_tiles
+                if len(self.entropy_grid[ny][nx]) == 0:
+                    self.wfc_visualizer.visualize(self.grid, self.entropy_grid)
+                    time.sleep(50)
 
     def collapse(
         self,
@@ -157,11 +156,12 @@ class WaveFunctionCollapse:
                 break
 
             # Collapse the wave function
-            self.wfc_visualizer.visualize(self.grid)
-            time.sleep(1)
             y, x = min_cell
             choices = list(self.entropy_grid[y][x])
             weights = [self.tile_weights[tile] for tile in choices]
             chosen_tile = rd.choices(choices, weights)[0]
             self.grid[y][x] = chosen_tile
             self.propagate(y, x, chosen_tile)
+
+            self.wfc_visualizer.visualize(self.grid, self.entropy_grid)
+            #time.sleep(0.2)

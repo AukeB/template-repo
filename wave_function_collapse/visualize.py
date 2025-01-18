@@ -4,6 +4,7 @@ import math
 import pygame as pg
 import random as rd
 from constants import Size, screen_resolution
+from tile import Tile
 
 
 class WFCVisualizer:
@@ -70,13 +71,23 @@ class WFCVisualizer:
                     )
                     pg.draw.rect(self.screen, cell_value, cell_rect)
 
-    def visualize(self, grid):
+    def visualize(self, grid, entropy_grid):
         """ """
+        pg.font.init()
+        font = pg.font.SysFont("Arial", 12)
+        self.screen.fill((0, 0, 0))
+
         for row_tile_idx in range(self.grid_dimensions.height):
             for col_tile_idx in range(self.grid_dimensions.width):
                 x, y = self._compute_tile_position(row_tile_idx, col_tile_idx)
                 tile_value = grid[row_tile_idx][col_tile_idx]
                 self._draw_tile(tile_value, x, y)
+                entropy_value = font.render(
+                    str(len(entropy_grid[row_tile_idx][col_tile_idx])),
+                    True,
+                    (255, 255, 255),
+                )
+                self.screen.blit(entropy_value, (x, y)) # Todo: clear screen when entropy_value has changed for (x, y)
 
         pg.display.flip()
 
@@ -111,7 +122,7 @@ class WFCVisualizer:
         grid_height = 7
 
         key_to_check = rd.choice(list(adjacency.keys()))
-        key_to_check = (("B", "A", "A"), ("B", "A", "A"), ("B", "A", "A"))
+        key_to_check = Tile((("A", "A", "A"), ("B", "B", "A"), ("B", "B", "A")))
 
         grid_height = max(
             (len(value) for value in adjacency[key_to_check].values() if len(value) > grid_height),
