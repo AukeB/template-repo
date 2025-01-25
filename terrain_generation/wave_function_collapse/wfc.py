@@ -44,8 +44,8 @@ class WaveFunctionCollapse:
             color_mapping=color_mapping,
         )
 
-        #self.wfc_visualizer.show_unique_tiles(self.tile_weights)
-        #self.wfc_visualizer.show_adjacency(self.adjacency)
+        # self.wfc_visualizer.show_unique_tiles(self.tile_weights)
+        # self.wfc_visualizer.show_adjacency(self.adjacency)
 
     def _check_tile_and_bitmap_dimensions(self):
         min_bitmap_dim = min(self.bitmap_dimensions.width, self.bitmap_dimensions.height)
@@ -164,4 +164,4 @@ class WaveFunctionCollapse:
             self.propagate(y, x, chosen_tile)
 
             self.wfc_visualizer.visualize(self.grid, self.entropy_grid)
-            #time.sleep(0.2)
+            # time.sleep(0.2)

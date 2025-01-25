@@ -87,7 +87,9 @@ class WFCVisualizer:
                     True,
                     (255, 255, 255),
                 )
-                self.screen.blit(entropy_value, (x, y)) # Todo: clear screen when entropy_value has changed for (x, y)
+                self.screen.blit(
+                    entropy_value, (x, y)
+                )  # Todo: clear screen when entropy_value has changed for (x, y)
 
         pg.display.flip()
 
