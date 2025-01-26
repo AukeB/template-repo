@@ -1,3 +1,3 @@
-# Algorithms from scratch
+# Template repository
 
-This repository contains implementations of algorithms without using any ML, AI or other packages that do the job for you.
+This is template repository that can be used for starting other repositories.
