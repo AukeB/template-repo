@@ -52,36 +52,92 @@ class DiamondSquare:
         """ """
         exists = 0 <= y < self.grid_dimensions.height and 0 <= x < self.grid_dimensions.width
         return exists
+    
+    def are_grid_elements_not_none(
+        self,
+        list_of_tuples
+    ):
+        """ """
+        return all(self.grid[y][x] is not None for x, y in list_of_tuples)
 
-    def determine_if_midpoint(
+    def find_valid_directions(
         self,
         x: int,
         y: int,
         directions: list[tuple[int, int]]
     ) -> bool:
         """ """
-        # first eliminate elements from the tuple of directions.
-        # then check diretions in all elements of the directions at the same time.
-        neighbor_found = False
+        valid_directions = []
 
-        for x_direction, y_direction in directions:
-            x_new, y_new = x + x_direction, y + y_direction
-            if not self.exists_grid_element(x_new, y_new):
-                continue
-            
-            neighbor_found = False
-            while self.exists_grid_element(x_new, y_new):
-                if self.grid[y_new][x_new]:
-                    neighbor_found = True
-                
-                x_new, y_new = x_new + x_direction, y_new + y_direction
-
-            if not neighbor_found:
-                break
+        for dx, dy in self.diamond_directions:
+            if self.exists_grid_element(x=x+dx, y=y+dy):
+                valid_directions.append((dx, dy))
         
-        return neighbor_found
+        return valid_directions
 
-    def find_midpoint_coordinates(
+    def determine_if_midpoint(
+        self,
+        x: int,
+        y: int,
+        directions,
+    ) -> bool:
+        """ """
+        valid_directions = self.find_valid_directions(x, y, directions)
+        
+        neighbor_coordinates = [(
+                x + x_direction,
+                y + y_direction
+            ) for (x_direction, y_direction) in valid_directions
+        ]
+
+        if self.are_grid_elements_not_none(neighbor_coordinates):
+            return neighbor_coordinates
+        
+        while not self.are_grid_elements_not_none(neighbor_coordinates):
+            neighbor_coordinates = [(
+                neighbor_coordinates[index][0] + x_direction,
+                neighbor_coordinates[index][1] + y_direction
+            ) for index, (x_direction, y_direction) in enumerate(valid_directions)
+        ]
+            for (y, x) in neighbor_coordinates:
+                if self.exists_grid_element(x, y):
+                    return False
+
+            if self.are_grid_elements_not_none(neighbor_coordinates):
+                return neighbor_coordinates
+        
+
+
+        
+
+
+
+
+
+
+
+
+        # neighbor_found = False
+
+        # for x_direction, y_direction in directions:
+        #     x_new, y_new = x + x_direction, y + y_direction
+        #     if not self.exists_grid_element(x_new, y_new):
+        #         continue
+            
+        #     neighbor_found = False
+        #     while self.exists_grid_element(x_new, y_new):
+        #         if self.grid[y_new][x_new]:
+        #             neighbor_found = True
+                
+        #         x_new, y_new = x_new + x_direction, y_new + y_direction
+
+        #     if not neighbor_found:
+        #         break
+        
+        # return neighbor_found
+        return False
+
+    def obtain_coordinate_pairs(
         self,
         step_name: str,
     ) -> set[tuple[int, int]]:
@@ -96,8 +152,8 @@ class DiamondSquare:
         
         for y in range(self.grid_dimensions.height):
             for x in range(self.grid_dimensions.width):
-                if self.exists_grid_element(x, y):
-                    break
+                if self.grid[y][x] is not None:
+                    continue
 
                 if self.determine_if_midpoint(x, y, directions):
                     coordinates.add((x, y))
@@ -145,7 +201,7 @@ class DiamondSquare:
         self,
     ) -> None:
         """ """
-        pass
+        self.obtain_coordinate_pairs(step_name='diamond')
 
     def execute(
         self,
@@ -157,9 +213,9 @@ class DiamondSquare:
             print(row)
 
         self.perform_diamond_step()
-        print()
+        # print()
 
-        for row in self.grid:
-            print(row)
+        # for row in self.grid:
+        #     print(row)
         
-        self.perform_square_step()
+        # self.perform_square_step()
