@@ -2,6 +2,7 @@
 __pycache__/
 .ruff_cache/
 .vscode/
+data/
 
 # Ignore temporary lock files starting with .~lock in the 'bitmaps' folder
 bitmaps/.~lock*

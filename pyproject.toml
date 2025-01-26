@@ -1,3 +1,30 @@
+# Project
+[project]
+name = "template_project"
+version = "0.1.0"
+description = "A brief description of your project"
+readme = "README.md"
+authors = [
+    {name = "Auke Bruinsma"}
+]
+keywords = ["template", "github", "example"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent"
+]
+requires-python = ">=3.9"
+dependencies = [
+    "pydantic >=2.10.6"
+]
+optional-dependencies.dev = [
+    "ruff >= 0.9.3"
+]
+
+# Build System
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [tool.ruff]
 line-length = 100
 lint.ignore = ["E722"]
