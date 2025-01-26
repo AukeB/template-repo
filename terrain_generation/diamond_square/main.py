@@ -1,7 +1,7 @@
 """ """
 
 from diamond_square import DiamondSquare
-from constants import Size
+from constants import Size, h
 
 
 def main():
@@ -9,7 +9,10 @@ def main():
     grid_dim = 2 * n + 1
     grid_dimensions = Size(grid_dim, grid_dim)
 
-    diamond_square = DiamondSquare(grid_dimensions)
+    diamond_square = DiamondSquare(
+        grid_dimensions=grid_dimensions,
+        h=h,
+    )
 
     diamond_square.execute()
 
