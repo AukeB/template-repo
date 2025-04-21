@@ -1,2 +1,3 @@
 make ruff
-	ruff check . --fix
+	uv run ruff check --fix src tests
+	uv run ruff format src tests
