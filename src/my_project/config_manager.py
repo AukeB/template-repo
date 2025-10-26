@@ -5,7 +5,7 @@ import yaml
 from pathlib import Path
 from pydantic import BaseModel, ConfigDict
 
-from src.my_project.constants import CONFIG
+from src.my_project.constants import CONFIG_PATH
 
 
 class ConfiguredBaseModel(BaseModel):
@@ -33,7 +33,7 @@ class ConfigModel(ConfiguredBaseModel):
 
 
 class ConfigManager:
-    def __init__(self, config_path: Path = CONFIG):
+    def __init__(self, config_path: Path = CONFIG_PATH):
         self.config_path = config_path
 
     def load_config_file(self) -> ConfigModel:
