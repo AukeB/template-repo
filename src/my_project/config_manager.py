@@ -3,13 +3,13 @@
 import yaml
 
 from pathlib import Path
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
 from src.my_project.constants import CONFIG
 
 
 class ConfiguredBaseModel(BaseModel):
-    class Config:
-        extra = "forbid"  # Disallow unexpected keys in config files
+    model_config = ConfigDict(extra="forbid")
 
 
 class ConfigModel(ConfiguredBaseModel):
@@ -37,7 +37,7 @@ class ConfigManager:
         self.config_path = config_path
 
     def load_config_file(self) -> ConfigModel:
-        with self.config_path.open("r") as f:
-            data = yaml.safe_load(f)
+        with open(self.config_path) as file:
+            config = yaml.safe_load(file)
 
-        return ConfigModel(**data)
+        return ConfigModel(**config)

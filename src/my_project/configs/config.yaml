@@ -1,5 +1,5 @@
 config_category_1:
-  float_param: 0.5
+  float_param: 2.5
   str_param: "hello"
 
 config_category_two:

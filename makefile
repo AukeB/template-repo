@@ -33,8 +33,6 @@ pytest:
 		--cov-branch
 	@echo "🧪 Successfully executed pytest."
 
-
-	@echo "⚡ Successfully executed all tasks
 # Remove caches and temporary files
 clean:
 	@find . -type d \( \
