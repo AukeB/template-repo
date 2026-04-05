@@ -30,7 +30,7 @@ def main_with_pygame_initialisation() -> None:
     import pygame as pg
 
     from src.my_project.config_manager import ConfigManager
-    from src.my_project.utils.utils_pygame import window_size_from_screen
+    from src.my_project.utils.utils_pygame import get_window_size_from_screen_resolution
 
     # Config
     manager = ConfigManager()
@@ -38,7 +38,8 @@ def main_with_pygame_initialisation() -> None:
 
     # Pygame init
     pg.init()
-    width, height = window_size_from_screen()
+    width, height = get_window_size_from_screen_resolution()
+    
     pg.display.set_mode((width, height))
     pg.display.set_caption("my_project")
 

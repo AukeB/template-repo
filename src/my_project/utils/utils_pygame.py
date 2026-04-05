@@ -5,7 +5,7 @@ import pygame as pg
 from src.my_project.constants import WINDOW_SIZE_SCREEN_FRACTION
 
 
-def window_size_from_screen(
+def get_window_size_from_screen_resolution(
     monitor_index: int = 0,
     min_width: int = 400,
     min_height: int = 300,
