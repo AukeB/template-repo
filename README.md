@@ -4,11 +4,11 @@ This is a template repository that can be used for starting other repositories.
 
 ## Validation stack
 
-This template comes with a fully configured validation stack covering static
-analysis, testing, runtime data validation, and git hook automation.
+This template comes with a fully configured validation stack covering static analysis, testing, runtime data validation, and git hook automation.
 
 | Tool | Description |
 |---|---|
+| **uv** | Fast Python package and environment manager used to run all tools consistently across environments. |
 | **Ruff** | Handles formatting, linting, import sorting, and annotation coverage enforcement in a single tool, replacing Black, Flake8, and isort. |
 | **ty** | Static type checker that verifies types flow correctly through the codebase, replacing Mypy. |
 | **pytest** | Runs the test suite with branch-level coverage measurement via pytest-cov. |
@@ -33,6 +33,4 @@ run via `uv` for consistent environment management:
 
 | Tool | Description |
 |---|---|
-| **Hypothesis** | Property-based testing library that auto-generates edge case inputs to complement pytest test suites. |
-| **pip-audit** | Scans dependencies for known security vulnerabilities, useful in production and work environments. |
 | **Sphinx** | Documentation generator that builds HTML, PDF, and other formats from docstrings and reStructuredText or Markdown source files. |

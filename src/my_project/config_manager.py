@@ -1,8 +1,8 @@
 """Module for loading the configuration files."""
 
-import yaml
-
 from pathlib import Path
+
+import yaml
 from pydantic import BaseModel, ConfigDict
 
 from src.my_project.constants import CONFIG_PATH
@@ -33,7 +33,7 @@ class ConfigModel(ConfiguredBaseModel):
 
 
 class ConfigManager:
-    def __init__(self, config_path: Path = CONFIG_PATH):
+    def __init__(self, config_path: Path = CONFIG_PATH) -> None:
         self.config_path = config_path
 
     def load_config_file(self) -> ConfigModel:
