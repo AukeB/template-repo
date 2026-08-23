@@ -11,21 +11,15 @@ from src.my_project.config_manager import ConfigManager
 def mock_yaml_config():
     """Fixture that defines a mock config content"""
     yaml_content = """
-        config_category_1:
-            float_param: 1.5
-            str_param: 'hello'
+        game:
+            fps: 60
 
-        config_category_two:
-            int_param: 1
-            bool_param: true
-            list_param:
-                - 'item1'
-                - 'item2'
-                - 'item3'
+        window:
+            caption: "Test Window"
+            background_color: [0, 0, 0]
     """
 
     return yaml_content
-
 
 @pytest.fixture(scope="function", name="mock_config")
 def test_load_conig_file(mock_yaml_content):

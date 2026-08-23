@@ -12,18 +12,16 @@ class ConfiguredBaseModel(BaseModel):
 class ConfigModel(ConfiguredBaseModel):
     """Config that combines all parameters"""
 
-    class ConfigCategory1(ConfiguredBaseModel):
-        """Config for category 1 parameters"""
+    class ConfigGame(ConfiguredBaseModel):
+        """Config for general game loop parameters."""
 
-        float_param: float
-        str_param: str
+        fps: int
 
-    class ConfigCategory2(ConfiguredBaseModel):
-        """Config for category 2 parameters"""
+    class ConfigWindow(ConfiguredBaseModel):
+        """Config for window appearance."""
 
-        int_param: int
-        bool_param: bool
-        list_param: list[str]
+        caption: str
+        background_color: list[int]
 
-    config_category_1: ConfigCategory1
-    config_category_two: ConfigCategory2
+    game: ConfigGame
+    window: ConfigWindow

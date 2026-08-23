@@ -5,7 +5,6 @@ import sys
 import pygame as pg
 
 from src.my_project.config_model import ConfigModel
-from src.my_project.constants import FPS
 from src.my_project.renderer import Renderer
 
 
@@ -18,9 +17,9 @@ class Game:
         Args:
             config (ConfigModel): Pydantic-validated configuration model.
         """
-        self.config = config
+        self.fps = config.game.fps
         self.running: bool = True
-        self.renderer = Renderer(self.config)
+        self.renderer = Renderer(config=config)
 
     def _handle_events(self) -> None:
         """Processes pending pygame events, including quit and key presses."""
@@ -42,11 +41,10 @@ class Game:
     def _loop(self) -> None:
         """Runs the main loop: handle input, update state, render frame."""
         while self.running:
-            delta_time = self.renderer.tick(FPS)
+            dt = self.renderer.tick(self.fps)
 
             self._handle_events()
-            self._update(dt=delta_time)
-            self.renderer.render()
+            self._update(dt)
 
     def _quit(self) -> None:
         """Shuts down the renderer and exits the process cleanly."""
@@ -54,6 +52,10 @@ class Game:
         sys.exit()
 
     def run(self) -> None:
-        """Orchestrates setup, main loop, and clean shutdown."""
+        """Orchestrates setup, main loop, and clean shutdown.
+
+        1. Run the main loop until the game stops running.
+        2. Shut down pygame and exit the process cleanly.
+        """
         self._loop()
         self._quit()

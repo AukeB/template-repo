@@ -1,11 +1,6 @@
-config_category_1:
-  float_param: 2.5
-  str_param: "hello"
+game:
+  fps: 60
 
-config_category_two:
-  int_param: 1
-  bool_param: true
-  list_param:
-    - "item1"
-    - "item2"
-    - "item3"
+window:
+  caption: "My Project"
+  background_color: [0, 0, 0]
