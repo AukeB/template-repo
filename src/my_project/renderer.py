@@ -3,8 +3,8 @@
 import pygame as pg
 
 from src.my_project.config_model import ConfigModel
-from src.my_project.constants import GRID_BACKGROUND_COLOR, WINDOW_CAPTION
-from src.my_project.grid import Grid
+from src.my_project.constants import WINDOW_CAPTION, WINDOW_BACKGROUND_COLOR
+from src.my_project.utils.utils_pygame import get_window_size_from_screen_resolution
 
 
 class Renderer:
@@ -18,22 +18,14 @@ class Renderer:
         """
         self.config = config
 
-        # State
-        self.screen: pg.Surface
-        self.clock: pg.time.Clock
-
-    def setup(self, width: int, height: int) -> None:
-        """Initializes pygame and creates the display window.
-
-        Args:
-            width (int): Window width in pixels.
-            height (int): Window height in pixels.
-        """
         pg.init()
 
+        width, height = get_window_size_from_screen_resolution()
         self.screen = pg.display.set_mode((width, height))
-        pg.display.set_caption(WINDOW_CAPTION)
         self.clock = pg.time.Clock()
+        self.background_color = WINDOW_BACKGROUND_COLOR
+
+        pg.display.set_caption(WINDOW_CAPTION)
 
     def tick(self, fps: int) -> float:
         """Advances the frame clock and reports the elapsed time.
@@ -63,8 +55,8 @@ class Renderer:
         Args:
             grid (Grid): The grid whose cells will be drawn.
             cell_size (int): Width and height in pixels of each cell.
-            color_map (dict[int, tuple[int, int, int]]): Maps cell states to RGB
-                colors.
+            color_map (dict[int, tuple[int, int, int]]): Maps cell states
+                to RGB colors.
         """
         for row in range(grid.rows):
             for column in range(grid.columns):

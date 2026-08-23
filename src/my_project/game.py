@@ -19,27 +19,12 @@ class Game:
         Args:
             config (ConfigModel): Pydantic-validated configuration model.
         """
-        self.config = config
+        self.running: bool = True
+        self.grid = Grid(config=config)
+        self.renderer = Renderer(config=config)
 
-        # State
-        self.running: bool = False
-        self.grid: Grid
-        self.renderer: Renderer
-
-    def _setup(self) -> None:
-        """Initializes the grid, renderer, and marks the game as running."""
-        grid_config = self.config.grid
-
-        self.grid = Grid(rows=grid_config.num_rows, columns=grid_config.num_columns)
+        # Random initialization for demonstration purposes.
         self.grid.randomize([0, 1])
-
-        width = grid_config.num_columns * grid_config.cell_size
-        height = grid_config.num_rows * grid_config.cell_size
-
-        self.renderer = Renderer(self.config)
-        self.renderer.setup(width, height)
-
-        self.running = True
 
     def _handle_events(self) -> None:
         """Processes pending pygame events, including quit and key presses."""

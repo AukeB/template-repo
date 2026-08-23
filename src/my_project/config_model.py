@@ -16,7 +16,8 @@ class ConfigModel(ConfiguredBaseModel):
         """Config for grid dimensions and appearance."""
 
         num_rows: int
-        num_columns: int
+        num_cols: int
         cell_size: int  # Units: pixels.
+        background_color: list[int]
 
     grid: ConfigGrid

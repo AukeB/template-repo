@@ -13,8 +13,9 @@ def mock_yaml_config():
     yaml_content = """
         grid:
             num_rows: 40
-            num_columns: 60
+            num_cols: 60
             cell_size: 50
+            background_color: [30, 30, 30]
     """
 
     return yaml_content
