@@ -22,15 +22,15 @@ class ConfigModel(ConfiguredBaseModel):
 
         caption: str
         background_color: list[int]
+        margin_size: int  # Units: pixels.
 
     class ConfigGrid(ConfiguredBaseModel):
         """Config for grid dimensions and appearance."""
 
-        num_rows: int
-        num_cols: int
-        cell_size: int  # Units: pixels.
-        background_color: list[int]
+        dim: int  # Number of cells in width as well as height direction.
         color_map: dict[int, list[int]]
+        grid_line_color: list[int]
+        grid_line_width: int  # Units: pixels.
 
     game: ConfigGame
     window: ConfigWindow

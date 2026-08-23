@@ -5,24 +5,23 @@ visualizations.
 import random as rd
 
 from src.my_project.config_model import ConfigModel
-from src.my_project.constants import Position
+from src.my_project.constants import Position, Dimensions
 
 
 class Grid:
     """Holds and manipulates a 2D grid of cell states."""
 
     def __init__(self, config: ConfigModel) -> None:
-        """Initializes an empty grid filled with a constant value.
+        """Initializes an empty square grid filled with a constant value.
 
         Args:
             config (ConfigModel): Pydantic-validated configuration model.
         """
-        self.num_rows = config.grid.num_rows
-        self.num_cols = config.grid.num_cols
-        self.grid_background_color = config.grid.background_color
+        self.dimensions = Dimensions(rows=config.grid.dim, cols=config.grid.dim)
 
         self.cells: list[list[int]] = [
-            [0 for _ in range(self.num_cols)] for _ in range(self.num_rows)
+            [0 for _ in range(self.dimensions.cols)]
+            for _ in range(self.dimensions.rows)
         ]
 
     def set_cell(self, position: Position, value: int) -> None:
@@ -44,6 +43,6 @@ class Grid:
         """
         values = values or [0, 1]
 
-        for row in range(self.num_rows):
-            for column in range(self.num_cols):
-                self.cells[row][column] = rd.choice(values)
+        for row in range(self.dimensions.rows):
+            for col in range(self.dimensions.cols):
+                self.cells[row][col] = rd.choice(values)

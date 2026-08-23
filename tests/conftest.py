@@ -17,15 +17,15 @@ def mock_yaml_config():
         window:
             caption: "Test Window"
             background_color: [0, 0, 0]
+            margin_size: 200
 
         grid:
-            num_rows: 40
-            num_cols: 60
-            cell_size: 50
-            background_color: [30, 30, 30]
+            dim: 10
             color_map:
                 0: [0, 0, 0]
                 1: [255, 255, 255]
+            grid_line_color: [50, 50, 50]
+            grid_line_width: 2
     """
 
     return yaml_content

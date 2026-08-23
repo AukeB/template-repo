@@ -3,13 +3,13 @@ game:
 
 window:
   caption: "My Project"
-  background_color: [0, 0, 0]
+  background_color: [100, 100, 100]
+  margin_size: 200 # Units: pixels.
 
 grid:
-  num_rows: 10
-  num_cols: 10
-  cell_size: 100 # Units: pixels.
-  background_color: [20, 20, 20]
+  dim: 10 # Number of cells in width as well as height direction.
   color_map:
     0: [0, 0, 0]
     1: [255, 255, 255]
+  grid_line_color: [150, 150, 150]
+  grid_line_width: 2 # Units: pixels.
