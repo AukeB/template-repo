@@ -1,19 +1,19 @@
-"""Module for the main game loop and pygame window management."""
+"""Module for game logic and orchestration of the main loop."""
 
 import sys
 
 import pygame as pg
 
 from src.my_project.config_model import ConfigModel
-from src.my_project.constants import FPS, WINDOW_CAPTION, BACKGROUND_COLOR
-from src.my_project.utils.utils_pygame import get_window_size_from_screen_resolution
+from src.my_project.constants import FPS
+from src.my_project.renderer import Renderer
 
 
 class Game:
-    """Manages the pygame window, event loop, and game state."""
+    """Manages game state and orchestrates the main loop."""
 
     def __init__(self, config: ConfigModel) -> None:
-        """Initializes the game with configuration and pygame state.
+        """Initializes the game with configuration and state.
 
         Args:
             config (ConfigModel): Pydantic-validated configuration model.
@@ -22,16 +22,13 @@ class Game:
 
         # State
         self.running: bool = False
-        self.screen: pg.Surface
-        self.clock: pg.time.Clock
+        self.renderer: Renderer
 
     def _setup(self) -> None:
-        """Initializes pygame, the display window, and the frame clock."""
-        pg.init()
-        width, height = get_window_size_from_screen_resolution()
-        self.screen = pg.display.set_mode((width, height))
-        pg.display.set_caption(WINDOW_CAPTION)
-        self.clock = pg.time.Clock()
+        """Initializes the renderer and marks the game as running."""
+        self.renderer = Renderer(self.config)
+        self.renderer.setup()
+
         self.running = True
 
     def _handle_events(self) -> None:
@@ -51,32 +48,25 @@ class Game:
         """
         pass
 
-    def _render(self) -> None:
-        """Draws the current frame to the display surface."""
-        self.screen.fill(BACKGROUND_COLOR)
-        pg.display.flip()
-
     def _loop(self) -> None:
-        """Runs the event loop, updating and rendering each frame."""
+        """Runs the main loop: handle input, update state, render frame."""
         while self.running:
-            # Seconds since last frame, capped at FPS
-            delta_time = self.clock.tick(FPS) / 1000
+            delta_time = self.renderer.tick(FPS)
 
             self._handle_events()
             self._update(dt=delta_time)
-            self._render()
+            self.renderer.render()
 
     def _quit(self) -> None:
-        """Shuts down pygame and exits the process cleanly."""
-        pg.quit()
+        """Shuts down the renderer and exits the process cleanly."""
+        self.renderer.quit()
         sys.exit()
 
     def run(self) -> None:
-        """Orchestrates game setup and runs the main loop until exit.
+        """Orchestrates setup, main loop, and clean shutdown.
 
-        1. Initialize pygame and create the display surface.
-        2. Run the event loop, handling input, updating state, and rendering
-           each frame.
+        1. Initialize the renderer and game state.
+        2. Run the main loop until the game stops running.
         3. Shut down pygame and exit the process cleanly.
         """
         self._setup()
