@@ -1,19 +1,17 @@
 [project]
 name = "template-repo"
 version = "0.1.0"
-description = "Add your description here"
+description = "Template repository"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "logging>=0.4.9.6",
     "pydantic>=2.12.3",
-    "pygame>=2.6.1",
     "pyyaml>=6.0.3",
 ]
 
 [dependency-groups]
 dev = [
-    "docstring-tailor>=0.2.0",
+    "docstring-tailor>=0.4.0",
     "prek>=0.3.8",
     "pytest>=8.4.2",
     "pytest-cov>=7.0.0",
@@ -21,15 +19,9 @@ dev = [
     "ty>=0.0.29",
 ]
 
-
-[[tool.mypy.overrides]]
-module = ["yaml.*"]
-follow_untyped_imports = true
-
 [tool.pytest.ini_options]
 pythonpath = ["."]
 
 [tool.docstring_tailor]
-line-length = 88
+line-length = 80
 style = "google"
-detect-lists = true
