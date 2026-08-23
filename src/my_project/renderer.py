@@ -36,9 +36,9 @@ class Renderer:
         Returns:
             delta_time (float): Time in seconds elapsed since the last frame.
         """
-        delta_time = self.clock.tick(fps) / 1000
+        dt = self.clock.tick(fps) / 1000
 
-        return delta_time
+        return dt
 
     def render(self) -> None:
         """Draws the current frame to the display surface."""
