@@ -12,18 +12,11 @@ class ConfiguredBaseModel(BaseModel):
 class ConfigModel(ConfiguredBaseModel):
     """Config that combines all parameters"""
 
-    class ConfigCategory1(ConfiguredBaseModel):
-        """Config for category 1 parameters"""
+    class ConfigGrid(ConfiguredBaseModel):
+        """Config for grid dimensions and appearance."""
 
-        float_param: float
-        str_param: str
+        num_rows: int
+        num_columns: int
+        cell_size: int  # Units: pixels.
 
-    class ConfigCategory2(ConfiguredBaseModel):
-        """Config for category 2 parameters"""
-
-        int_param: int
-        bool_param: bool
-        list_param: list[str]
-
-    config_category_1: ConfigCategory1
-    config_category_two: ConfigCategory2
+    grid: ConfigGrid

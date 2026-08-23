@@ -5,7 +5,8 @@ import sys
 import pygame as pg
 
 from src.my_project.config_model import ConfigModel
-from src.my_project.constants import FPS
+from src.my_project.constants import GRID_COLOR_MAP, FPS
+from src.my_project.grid import Grid
 from src.my_project.renderer import Renderer
 
 
@@ -22,12 +23,21 @@ class Game:
 
         # State
         self.running: bool = False
+        self.grid: Grid
         self.renderer: Renderer
 
     def _setup(self) -> None:
-        """Initializes the renderer and marks the game as running."""
+        """Initializes the grid, renderer, and marks the game as running."""
+        grid_config = self.config.grid
+
+        self.grid = Grid(rows=grid_config.num_rows, columns=grid_config.num_columns)
+        self.grid.randomize([0, 1])
+
+        width = grid_config.num_columns * grid_config.cell_size
+        height = grid_config.num_rows * grid_config.cell_size
+
         self.renderer = Renderer(self.config)
-        self.renderer.setup()
+        self.renderer.setup(width, height)
 
         self.running = True
 
@@ -51,11 +61,15 @@ class Game:
     def _loop(self) -> None:
         """Runs the main loop: handle input, update state, render frame."""
         while self.running:
-            delta_time = self.renderer.tick(FPS)
+            dt = self.renderer.tick(FPS)
 
             self._handle_events()
-            self._update(dt=delta_time)
-            self.renderer.render()
+            self._update(dt)
+
+            self.renderer.clear()
+            cell_size = self.config.grid.cell_size
+            self.renderer.render_grid(self.grid, cell_size, GRID_COLOR_MAP)
+            self.renderer.present()
 
     def _quit(self) -> None:
         """Shuts down the renderer and exits the process cleanly."""
@@ -65,7 +79,7 @@ class Game:
     def run(self) -> None:
         """Orchestrates setup, main loop, and clean shutdown.
 
-        1. Initialize the renderer and game state.
+        1. Initialize the grid, renderer, and game state.
         2. Run the main loop until the game stops running.
         3. Shut down pygame and exit the process cleanly.
         """
