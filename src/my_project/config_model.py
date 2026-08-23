@@ -22,6 +22,7 @@ class ConfigModel(ConfiguredBaseModel):
 
         caption: str
         background_color: list[int]
+        margin_size: int  # Units: pixels.
 
     game: ConfigGame
     window: ConfigWindow

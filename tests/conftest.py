@@ -17,6 +17,7 @@ def mock_yaml_config():
         window:
             caption: "Test Window"
             background_color: [0, 0, 0]
+            margin_size: 200
     """
 
     return yaml_content

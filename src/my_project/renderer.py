@@ -3,6 +3,7 @@
 import pygame as pg
 
 from src.my_project.config_model import ConfigModel
+from src.my_project.constants import Size
 from src.my_project.utils.utils_pygame import get_window_size_from_screen_resolution
 
 
@@ -16,12 +17,15 @@ class Renderer:
             config (ConfigModel): Pydantic-validated configuration model.
         """
         self.window_background_color = config.window.background_color
+        self.margin_size = config.window.margin_size
         window_caption = config.window.caption
 
         pg.init()
 
-        width, height = get_window_size_from_screen_resolution()
-        self.screen = pg.display.set_mode((width, height))
+        self.screen_size = Size(*get_window_size_from_screen_resolution())
+        self.screen = pg.display.set_mode(
+            (self.screen_size.width, self.screen_size.height)
+        )
         self.clock = pg.time.Clock()
 
         pg.display.set_caption(window_caption)
@@ -43,8 +47,7 @@ class Renderer:
         """Draws the current frame and presents it to the display.
 
         1. Fill the screen with the window background color.
-        2. Draw the grid on top.
-        3. Flip the display buffer to show the frame.
+        2. Flip the display buffer to show the frame.
 
         Args:
             grid (Grid): The grid whose cells will be drawn.

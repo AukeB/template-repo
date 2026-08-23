@@ -3,4 +3,5 @@ game:
 
 window:
   caption: "My Project"
-  background_color: [0, 0, 0]
+  background_color: [100, 100, 100]
+  margin_size: 200 # Units: pixels.
