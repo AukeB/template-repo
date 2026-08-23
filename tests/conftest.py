@@ -11,11 +11,21 @@ from src.my_project.config_manager import ConfigManager
 def mock_yaml_config():
     """Fixture that defines a mock config content"""
     yaml_content = """
+        game:
+            fps: 60
+
+        window:
+            caption: "Test Window"
+            background_color: [0, 0, 0]
+
         grid:
             num_rows: 40
             num_cols: 60
             cell_size: 50
             background_color: [30, 30, 30]
+            color_map:
+                0: [0, 0, 0]
+                1: [255, 255, 255]
     """
 
     return yaml_content

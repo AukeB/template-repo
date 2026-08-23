@@ -5,7 +5,6 @@ import sys
 import pygame as pg
 
 from src.my_project.config_model import ConfigModel
-from src.my_project.constants import GRID_COLOR_MAP, FPS
 from src.my_project.grid import Grid
 from src.my_project.renderer import Renderer
 
@@ -19,12 +18,15 @@ class Game:
         Args:
             config (ConfigModel): Pydantic-validated configuration model.
         """
+        self.fps = config.game.fps
+
         self.running: bool = True
+
         self.grid = Grid(config=config)
         self.renderer = Renderer(config=config)
 
         # Random initialization for demonstration purposes.
-        self.grid.randomize([0, 1])
+        self.grid.randomize()
 
     def _handle_events(self) -> None:
         """Processes pending pygame events, including quit and key presses."""
@@ -46,15 +48,12 @@ class Game:
     def _loop(self) -> None:
         """Runs the main loop: handle input, update state, render frame."""
         while self.running:
-            dt = self.renderer.tick(FPS)
+            dt = self.renderer.tick(self.fps)
 
             self._handle_events()
             self._update(dt)
 
-            self.renderer.clear()
-            cell_size = self.config.grid.cell_size
-            self.renderer.render_grid(self.grid, cell_size, GRID_COLOR_MAP)
-            self.renderer.present()
+            self.renderer.render(self.grid)
 
     def _quit(self) -> None:
         """Shuts down the renderer and exits the process cleanly."""
@@ -64,10 +63,8 @@ class Game:
     def run(self) -> None:
         """Orchestrates setup, main loop, and clean shutdown.
 
-        1. Initialize the grid, renderer, and game state.
-        2. Run the main loop until the game stops running.
-        3. Shut down pygame and exit the process cleanly.
+        1. Run the main loop until the game stops running.
+        2. Shut down pygame and exit the process cleanly.
         """
-        self._setup()
         self._loop()
         self._quit()

@@ -3,8 +3,8 @@
 import pygame as pg
 
 from src.my_project.config_model import ConfigModel
-from src.my_project.constants import WINDOW_CAPTION, WINDOW_BACKGROUND_COLOR
 from src.my_project.utils.utils_pygame import get_window_size_from_screen_resolution
+from src.my_project.grid import Grid
 
 
 class Renderer:
@@ -16,16 +16,18 @@ class Renderer:
         Args:
             config (ConfigModel): Pydantic-validated configuration model.
         """
-        self.config = config
+        self.window_background_color = config.window.background_color
+        self.grid_color_map = config.grid.color_map
+        self.cell_size = config.grid.cell_size
+        window_caption = config.window.caption
 
         pg.init()
 
         width, height = get_window_size_from_screen_resolution()
         self.screen = pg.display.set_mode((width, height))
         self.clock = pg.time.Clock()
-        self.background_color = WINDOW_BACKGROUND_COLOR
 
-        pg.display.set_caption(WINDOW_CAPTION)
+        pg.display.set_caption(window_caption)
 
     def tick(self, fps: int) -> float:
         """Advances the frame clock and reports the elapsed time.
@@ -40,39 +42,40 @@ class Renderer:
 
         return dt
 
-    def clear(self) -> None:
-        """Fills the display surface with the background color."""
-        self.screen.fill(GRID_BACKGROUND_COLOR)
-
     def render_grid(
         self,
         grid: Grid,
-        cell_size: int,
-        color_map: dict[int, tuple[int, int, int]],
     ) -> None:
         """Draws every cell of the grid onto the display surface.
 
         Args:
             grid (Grid): The grid whose cells will be drawn.
-            cell_size (int): Width and height in pixels of each cell.
-            color_map (dict[int, tuple[int, int, int]]): Maps cell states
-                to RGB colors.
         """
-        for row in range(grid.rows):
-            for column in range(grid.columns):
+        for row in range(grid.num_rows):
+            for column in range(grid.num_cols):
                 value = grid.cells[row][column]
-                color = color_map[value]
+                color = self.grid_color_map[value]
 
                 rect = pg.Rect(
-                    column * cell_size,
-                    row * cell_size,
-                    cell_size,
-                    cell_size,
+                    column * self.cell_size,
+                    row * self.cell_size,
+                    self.cell_size,
+                    self.cell_size,
                 )
                 pg.draw.rect(self.screen, color, rect)
 
-    def present(self) -> None:
-        """Flips the display buffer, showing the current frame."""
+    def render(self, grid: Grid) -> None:
+        """Draws the current frame and presents it to the display.
+
+        1. Fill the screen with the window background color.
+        2. Draw the grid on top.
+        3. Flip the display buffer to show the frame.
+
+        Args:
+            grid (Grid): The grid whose cells will be drawn.
+        """
+        self.screen.fill(self.window_background_color)
+        self.render_grid(grid=grid)
         pg.display.flip()
 
     def quit(self) -> None:
