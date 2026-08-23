@@ -19,17 +19,8 @@ class Game:
             config (ConfigModel): Pydantic-validated configuration model.
         """
         self.config = config
-
-        # State
-        self.running: bool = False
-        self.renderer: Renderer
-
-    def _setup(self) -> None:
-        """Initializes the renderer and marks the game as running."""
+        self.running: bool = True
         self.renderer = Renderer(self.config)
-        self.renderer.setup()
-
-        self.running = True
 
     def _handle_events(self) -> None:
         """Processes pending pygame events, including quit and key presses."""
@@ -63,12 +54,6 @@ class Game:
         sys.exit()
 
     def run(self) -> None:
-        """Orchestrates setup, main loop, and clean shutdown.
-
-        1. Initialize the renderer and game state.
-        2. Run the main loop until the game stops running.
-        3. Shut down pygame and exit the process cleanly.
-        """
-        self._setup()
+        """Orchestrates setup, main loop, and clean shutdown."""
         self._loop()
         self._quit()

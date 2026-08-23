@@ -18,19 +18,14 @@ class Renderer:
         """
         self.config = config
 
-        # State
-        self.screen: pg.Surface
-        self.clock: pg.time.Clock
-        self.background_color = BACKGROUND_COLOR
-
-    def setup(self) -> None:
-        """Initializes pygame and creates the scaled display window."""
         pg.init()
 
         width, height = get_window_size_from_screen_resolution()
         self.screen = pg.display.set_mode((width, height))
-        pg.display.set_caption(WINDOW_CAPTION)
         self.clock = pg.time.Clock()
+        self.background_color = BACKGROUND_COLOR
+
+        pg.display.set_caption(WINDOW_CAPTION)
 
     def tick(self, fps: int) -> float:
         """Advances the frame clock and reports the elapsed time.
