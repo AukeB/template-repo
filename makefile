@@ -16,7 +16,6 @@ ty:
 	uv run ty check
 	@echo "🔍 Successfully executed ty."
 
-
 # Run tests with Pytest
 # -vvvs: Very verbose output, shows print() statements and extra test details
 # --cov=$(PROJECT_NAME): Measure test coverage for the project
@@ -25,8 +24,7 @@ ty:
 pytest:
 	uv run pytest tests -vvvs \
 		--cov=$(PROJECT_NAME) \
-		--cov-report=term-missing \
-		--cov-branch
+		--cov-report=term-missing
 	@echo "🧪 Successfully executed pytest."
 
 # Remove caches and temporary files
