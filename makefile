@@ -7,8 +7,8 @@ ruff:
 	uv run ruff format $(PROJECT_NAME)
 	@echo "🔧 Successfully executed ruff."
 
-docstring:
-	uv run docstring_tailor
+format-docstrings:
+	uv run docstring_tailor format
 	@echo "🔧 Successfully executed docstring-tailor."
 
 # Static type-check code with ty.
@@ -51,7 +51,7 @@ git:
 # Run full workflow: format, type-check, test, clean, commit
 all:
 	make ruff
-	make docstring
+	make format-docstrings
 	make ty
 	make pytest
 	make clean

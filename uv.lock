@@ -110,15 +110,15 @@ wheels = [
 
 [[package]]
 name = "docstring-tailor"
-version = "0.2.0"
+version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "libcst" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/98/64/5689015784a7b6eb21e957783a11448b66d277f4e09480c80b20d5ce1d1f/docstring_tailor-0.2.0.tar.gz", hash = "sha256:3e556804b3196b54b3a78472f2c50f0753d5db6acd59e3834351fab8346ee420", size = 58590, upload-time = "2026-06-07T16:03:33.759Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6a/26/ad58641b3fcf8dae7efd27ded8b86a8c474560011f740f61e1c38a46e696/docstring_tailor-0.4.0.tar.gz", hash = "sha256:8522fae6fcaf19af9ae18d67cab1def009cfb46f3f40ea4f72db568a64f7c8e1", size = 107814, upload-time = "2026-07-24T19:21:25.099Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/81/6c/6b41170f7c085a58b6a1799fe1f84df6bc28a13d295a728c879db1b4d0e3/docstring_tailor-0.2.0-py3-none-any.whl", hash = "sha256:2c3c0a9bd204a8b5533817da904d0bd48a3a306cc7ec86e22091330218335d6c", size = 21575, upload-time = "2026-06-07T16:03:32.239Z" },
+    { url = "https://files.pythonhosted.org/packages/a1/72/afc3a9d96093776d74d4b9322e8879524588c993cbd0c7318d8e78ce27c7/docstring_tailor-0.4.0-py3-none-any.whl", hash = "sha256:0fd568c6ec2faab221c15d0723ee6e187204639a5c296dee403b4b06c2e17ffa", size = 67474, upload-time = "2026-07-24T19:21:23.61Z" },
 ]
 
 [[package]]
@@ -181,12 +181,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/39/c3/829092ead738b71e96a4e96896c96f276976e5a8a58b4473ed813d7c962b/libcst-1.8.6-cp314-cp314t-win_amd64.whl", hash = "sha256:bdb14bc4d4d83a57062fed2c5da93ecb426ff65b0dc02ddf3481040f5f074a82", size = 2181581, upload-time = "2025-11-03T22:33:14.514Z" },
     { url = "https://files.pythonhosted.org/packages/98/6d/5d6a790a02eb0d9d36c4aed4f41b277497e6178900b2fa29c35353aa45ed/libcst-1.8.6-cp314-cp314t-win_arm64.whl", hash = "sha256:819c8081e2948635cab60c603e1bbdceccdfe19104a242530ad38a36222cb88f", size = 2065000, upload-time = "2025-11-03T22:33:16.257Z" },
 ]
-
-[[package]]
-name = "logging"
-version = "0.4.9.6"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/93/4b/979db9e44be09f71e85c9c8cfc42f258adfb7d93ce01deed2788b2948919/logging-0.4.9.6.tar.gz", hash = "sha256:26f6b50773f085042d301085bd1bf5d9f3735704db9f37c1ce6d8b85c38f2417", size = 96029, upload-time = "2013-06-04T23:43:22.086Z" }
 
 [[package]]
 name = "markdown-it-py"
@@ -516,7 +510,6 @@ name = "template-repo"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "logging" },
     { name = "pydantic" },
     { name = "pygame" },
     { name = "pyyaml" },
@@ -534,7 +527,6 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "logging", specifier = ">=0.4.9.6" },
     { name = "pydantic", specifier = ">=2.12.3" },
     { name = "pygame", specifier = ">=2.6.1" },
     { name = "pyyaml", specifier = ">=6.0.3" },
@@ -542,7 +534,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "docstring-tailor", specifier = ">=0.2.0" },
+    { name = "docstring-tailor", specifier = ">=0.4.0" },
     { name = "prek", specifier = ">=0.3.8" },
     { name = "pytest", specifier = ">=8.4.2" },
     { name = "pytest-cov", specifier = ">=7.0.0" },
