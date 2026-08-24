@@ -24,6 +24,7 @@ def mock_yaml_config():
             color_map:
                 0: [0, 0, 0]
                 1: [255, 255, 255]
+            show_gridlines: False
             grid_line_color: [50, 50, 50]
             grid_line_width: 2
     """

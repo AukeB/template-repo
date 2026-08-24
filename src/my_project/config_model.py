@@ -29,6 +29,7 @@ class ConfigModel(ConfiguredBaseModel):
 
         dim: int  # Number of cells in width as well as height direction.
         color_map: dict[int, list[int]]
+        show_gridlines: bool
         grid_line_color: list[int]
         grid_line_width: int  # Units: pixels.
 
