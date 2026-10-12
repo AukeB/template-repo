@@ -10,9 +10,19 @@ This template comes with a fully configured validation stack covering static ana
 |---|---|
 | **Ruff** | Handles formatting, linting, import sorting, and annotation coverage enforcement in a single tool, replacing Black, Flake8, and isort. |
 | **Docstring-tailor** | Handles formatting (line wrapping) for docstrings. |
+| **Pyright** | Static type checker that is the engine behind Pylance, the default Python language server in VS Code. |
 | **ty** | Static type checker that verifies types flow correctly through the codebase, replacing Mypy. |
 | **pytest** | Runs the test suite with branch-level coverage measurement via pytest-cov. |
 | **Pydantic** | Enforces the shape and type of data at runtime boundaries. |
+
+### Why two static type checkers
+
+The template runs both **ty** and **Pyright**. The reasons:
+
+- **Pylance is the default in VS Code.** Pylance uses Pyright, and most VS Code Python users have it enabled. Running Pyright from the Makefile means that if the code passes `make pyright`, it won't show errors when the files are opened in the editor through the LSP.
+- **Listening to type checkers is good practice.** Type errors are often real bugs, so it pays to act on what the checkers report rather than dismissing them.
+- **ty adds more good practices.** Beyond the type checks Pyright performs, ty flags additional issues, so using it complements Pyright.
+- **The two have not conflicted so far.** In practice, fixing an error reported by one has never produced an error in the other.
 
 ## Makefile
 
@@ -23,11 +33,19 @@ run via `uv` for consistent environment management:
 |---|---|
 | `make ruff` | Runs Ruff linting with auto-fix, then formats the codebase. |
 | `make format-docstrings` | Applies `docstring-tailor` to all python modules |
+| `make pyright` | Runs Pyright for static type checking. |
 | `make ty` | Runs ty for static type checking. |
 | `make pytest` | Runs the full test suite with verbose output and branch coverage. |
 | `make clean` | Removes caches and temporary files (`__pycache__`, `.ruff_cache`, `.ty_cache`, `.pytest_cache`, `.coverage`, `artifacts`). |
 | `make git` | Stages all changes, commits with the default message `"Updated"`, and pushes to remote. |
-| `make all` | Runs the full workflow: `ruff` → `docstring-tailor` → `ty` → `pytest` → `clean` → `git`. |
+| `make all` | Runs the full workflow: `ruff` → `docstring-tailor` → `ty` → `pyright` → `pytest` → `clean` → `git`. |
+
+## Agent instructions
+
+This repository contains agent instructions for AI coding assistants:
+
+- [AGENTS.md](AGENTS.md): Commands, code conventions, testing conventions, and working style for agents.
+- [CLAUDE.md](CLAUDE.md): Points Claude Code to `AGENTS.md`.
 
 ## Branches
 
