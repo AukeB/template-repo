@@ -18,8 +18,6 @@ This template comes with a fully configured validation stack covering static ana
 
 ### Why two static type checkers
 
-**TL;DR:** I prefer **ty** because it comes from the same makers as Ruff. **Pyright** is still included because it is enabled by default in VS Code, so it is worth running from the CLI as well.
-
 The template runs both **ty** and **Pyright**. The reasons:
 
 - **Pylance is the default in VS Code.** Pylance uses Pyright, and most VS Code Python users have it enabled. Running Pyright from the Makefile means that if the code passes `make pyright`, it won't show errors when the files are opened in the editor through the LSP.
@@ -67,4 +65,4 @@ To use a branch as the starting point for a new repository, switch to it on GitH
 
 | Tool | Description |
 |---|---|
-| **prek** | Rust-based replacement for `pre-commit` that runs hooks in parallel before every commit, significantly faster than `pre-commit`. Would apply `ruff` and `ty` (and eventually `docstring-tailor`, once it supports pre-commit hooks) automatically before each commit. Not currently adopted — feels like more process than needed for personal hobby projects. |
+| **prek** | Rust-based replacement for `pre-commit` that runs hooks in parallel before every commit, significantly faster than `pre-commit`. Would apply `deptry`, `ruff`, `docstring-tailor` and `ty` automatically before each commit. Not currently adopted — feels like more process than needed for personal hobby projects. |
