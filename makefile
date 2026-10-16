@@ -1,6 +1,11 @@
 # Default project folder
 PROJECT_NAME = src/my_project
 
+# Check for missing, unused, and transitive dependencies with deptry
+deptry:
+	uv run deptry .
+	@echo "📦 Successfully executed deptry."
+
 # Format and lint code with Ruff
 ruff:
 	uv run ruff check $(PROJECT_NAME) --fix
@@ -54,6 +59,7 @@ git:
 
 # Run full workflow: format, type-check, test, clean, commit
 all:
+	make deptry
 	make ruff
 	make format-docstrings
 	make pyright

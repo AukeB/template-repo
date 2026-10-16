@@ -8,6 +8,7 @@ This template comes with a fully configured validation stack covering static ana
 
 | Tool | Description |
 |---|---|
+| **deptry** | Finds dependency issues: missing dependencies imported in the code, unused dependencies declared in `pyproject.toml`, and transitive dependencies imported directly. |
 | **Ruff** | Handles formatting, linting, import sorting, and annotation coverage enforcement in a single tool, replacing Black, Flake8, and isort. |
 | **Docstring-tailor** | Handles formatting (line wrapping) for docstrings. |
 | **Pyright** | Static type checker that is the engine behind Pylance, the default Python language server in VS Code. |
@@ -16,6 +17,8 @@ This template comes with a fully configured validation stack covering static ana
 | **Pydantic** | Enforces the shape and type of data at runtime boundaries. |
 
 ### Why two static type checkers
+
+**TL;DR:** I prefer **ty** because it comes from the same makers as Ruff. **Pyright** is still included because it is enabled by default in VS Code, so it is worth running from the CLI as well.
 
 The template runs both **ty** and **Pyright**. The reasons:
 
@@ -31,6 +34,7 @@ run via `uv` for consistent environment management:
 
 | Command | Description |
 |---|---|
+| `make deptry` | Runs deptry to check for missing, unused, and transitive dependencies. |
 | `make ruff` | Runs Ruff linting with auto-fix, then formats the codebase. |
 | `make format-docstrings` | Applies `docstring-tailor` to all python modules |
 | `make pyright` | Runs Pyright for static type checking. |
@@ -38,7 +42,7 @@ run via `uv` for consistent environment management:
 | `make pytest` | Runs the full test suite with verbose output and branch coverage. |
 | `make clean` | Removes caches and temporary files (`__pycache__`, `.ruff_cache`, `.ty_cache`, `.pytest_cache`, `.coverage`, `artifacts`). |
 | `make git` | Stages all changes, commits with the default message `"Updated"`, and pushes to remote. |
-| `make all` | Runs the full workflow: `ruff` → `docstring-tailor` → `ty` → `pyright` → `pytest` → `clean` → `git`. |
+| `make all` | Runs the full workflow: `deptry` → `ruff` → `docstring-tailor` → `pyright` → `ty` → `pytest` → `clean` → `git`. |
 
 ## Agent instructions
 
