@@ -1,7 +1,9 @@
 """Module for testing config_manager.py"""
 
+from my_project.config_model import ConfigModel
 
-from src.my_project.config_manager import ConfigModel
+
+# Testing the "load_config_file" method from the "ConfigManager" class.
 
 
 def test_load_config_file(mock_config):

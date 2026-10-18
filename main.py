@@ -1,21 +1,29 @@
 """Module for running the main repository workflow."""
 
+import logging
+
 import yaml
 
-from src.my_project.config_manager import ConfigManager
+from my_project.config_manager import ConfigManager
+
+logger = logging.getLogger(__name__)
+
 
 def main() -> None:
-    """
-    Load configuration and print the loaded settings.
+    """Load configuration and log the loaded settings.
 
-    1. Instantiate ConfigManager and load the config file.
-    2. Print the loaded configuration as YAML.
+    1. Configure logging.
+    2. Instantiate ConfigManager and load the config file.
+    3. Log the loaded configuration as YAML.
     """
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
+
     config_manager = ConfigManager()
     config = config_manager.load_config_file()
+    config_data = config.model_dump()
+    config_yaml = yaml.safe_dump(config_data, sort_keys=False, default_flow_style=False)
 
-    print("Loaded config:")
-    print(yaml.safe_dump(config.model_dump(), sort_keys=False, default_flow_style=False))
+    logger.info("Loaded config:\n%s", config_yaml)
 
 
 if __name__ == "__main__":
