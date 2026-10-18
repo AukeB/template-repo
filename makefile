@@ -1,6 +1,11 @@
 # Default project folder
 PROJECT_NAME = src/my_project
 
+# Check for missing, unused, and transitive dependencies with deptry
+deptry:
+	uv run deptry .
+	@echo "📦 Successfully executed deptry."
+
 # Format and lint code with Ruff
 ruff:
 	uv run ruff check $(PROJECT_NAME) --fix
@@ -8,12 +13,17 @@ ruff:
 	@echo "🔧 Successfully executed ruff."
 
 format-docstrings:
-	uv run docstring_tailor format
+	uv run docstring_tailor format $(PROJECT_NAME)
 	@echo "🔧 Successfully executed docstring-tailor."
+
+# Static type-check code with pyright (same engine as Pylance in VS Code).
+pyright:
+	uv run pyright $(PROJECT_NAME)
+	@echo "🔍 Successfully executed pyright."
 
 # Static type-check code with ty.
 ty:
-	uv run ty check
+	uv run ty check $(PROJECT_NAME)
 	@echo "🔍 Successfully executed ty."
 
 # Run tests with Pytest
@@ -24,6 +34,7 @@ ty:
 pytest:
 	uv run pytest tests -vvvs \
 		--cov=$(PROJECT_NAME) \
+		--cov-branch \
 		--cov-report=term-missing
 	@echo "🧪 Successfully executed pytest."
 
@@ -48,8 +59,10 @@ git:
 
 # Run full workflow: format, type-check, test, clean, commit
 all:
+	make deptry
 	make ruff
 	make format-docstrings
+	make pyright
 	make ty
 	make pytest
 	make clean

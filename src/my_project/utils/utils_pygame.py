@@ -2,7 +2,7 @@
 
 import pygame as pg
 
-from src.my_project.constants import WINDOW_SIZE_SCREEN_FRACTION
+from my_project.constants import WINDOW_SIZE_SCREEN_FRACTION
 
 
 def get_window_size_from_screen_resolution(
@@ -26,8 +26,9 @@ def get_window_size_from_screen_resolution(
         min_height (int): Minimum window height in pixels.
 
     Returns:
-        tuple[int, int]: The window width and height in pixels.
+        window_size (tuple[int, int]): The window width and height in pixels.
     """
+
     # Init
     if not pg.display.get_init():
         pg.display.init()
@@ -41,7 +42,12 @@ def get_window_size_from_screen_resolution(
         desktop_height = info.current_h if info.current_h > 0 else 1080
 
     # Scale
-    width = max(min_width, int(desktop_width * WINDOW_SIZE_SCREEN_FRACTION))
-    height = max(min_height, int(desktop_height * WINDOW_SIZE_SCREEN_FRACTION))
+    scaled_width = int(desktop_width * WINDOW_SIZE_SCREEN_FRACTION)
+    scaled_height = int(desktop_height * WINDOW_SIZE_SCREEN_FRACTION)
 
-    return width, height
+    width = max(min_width, scaled_width)
+    height = max(min_height, scaled_height)
+
+    window_size = width, height
+
+    return window_size

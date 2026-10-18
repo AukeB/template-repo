@@ -4,19 +4,28 @@ visualizations.
 
 import random as rd
 
-from src.my_project.config_model import ConfigModel
-from src.my_project.constants import Position, Dimensions
+from my_project.config_model import ConfigModel
+from my_project.constants import Dimensions, Position
 
 
 class Grid:
-    """Holds and manipulates a 2D grid of cell states."""
+    """Holds and manipulates a 2D grid of cell states.
+
+    Attributes:
+        dimensions (Dimensions): Number of rows and columns of the grid.
+        cells (list[list[int]]): Cell states, indexed as cells[row][col].
+
+    Example:
+        grid = Grid(config=config) grid.randomize()
+    """
 
     def __init__(self, config: ConfigModel) -> None:
-        """Initializes an empty square grid filled with a constant value.
+        """Initializes an empty square grid filled with zeros.
 
         Args:
             config (ConfigModel): Pydantic-validated configuration model.
         """
+
         self.dimensions = Dimensions(rows=config.grid.dim, cols=config.grid.dim)
 
         self.cells: list[list[int]] = [
@@ -32,17 +41,19 @@ class Grid:
                 column and y maps to the row.
             value (int): The new state to store at that position.
         """
+
         self.cells[position.y][position.x] = value
 
     def randomize(self, values: list[int] | None = None) -> None:
         """Fills the grid with random values drawn from the given options.
 
         Args:
-            values (list[int]): Pool of possible cell states to sample from.
-                Defaults to `[0, 1]`.
+            values (list[int] | None): Pool of possible cell states to sample
+                from. Defaults to `[0, 1]`.
         """
-        values = values or [0, 1]
+
+        options = values or [0, 1]
 
         for row in range(self.dimensions.rows):
             for col in range(self.dimensions.cols):
-                self.cells[row][col] = rd.choice(values)
+                self.cells[row][col] = rd.choice(options)
