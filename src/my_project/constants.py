@@ -1,16 +1,26 @@
-# Module for storing project constants.
+"""Module for storing project constants."""
 
 from pathlib import Path
-from collections import namedtuple
+from typing import NamedTuple
 
-# Project directory and file paths.
-CONFIG_PATH = Path("src/my_project/configs/config.yaml")
+_PACKAGE_DIRECTORY = Path(__file__).parent
+
+CONFIG_PATH = _PACKAGE_DIRECTORY / "configs" / "config.yaml"
 
 # PyGame setup.
 WINDOW_SIZE_SCREEN_FRACTION: float = 0.9
 
-"""- `Size` denotes the physical or spatial extent of an object, characterized
-by its width and height. These measurements are typically expressed in pixels,
-but any unit of physical distance may be employed.
-"""
-Size = namedtuple("Size", "width height")
+
+class Size(NamedTuple):
+    """Physical or spatial extent of an object, given by its width and height.
+
+    These measurements are typically expressed in pixels, but any unit of
+    physical distance may be employed.
+
+    Attributes:
+        width (int): Horizontal extent.
+        height (int): Vertical extent.
+    """
+
+    width: int
+    height: int

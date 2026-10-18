@@ -2,13 +2,24 @@
 
 import pygame as pg
 
-from src.my_project.config_model import ConfigModel
-from src.my_project.constants import Size
-from src.my_project.utils.utils_pygame import get_window_size_from_screen_resolution
+from my_project.config_model import ConfigModel
+from my_project.constants import Size
+from my_project.utils.utils_pygame import get_window_size_from_screen_resolution
 
 
 class Renderer:
-    """Manages the pygame window and draws each frame."""
+    """Manages the pygame window and draws each frame.
+
+    Attributes:
+        window_background_color (list[int]): RGB color that fills the window.
+        margin_size (int): Margin around the drawing area, in pixels.
+        screen_size (Size): Width and height of the window, in pixels.
+        screen (pg.Surface): The display surface that frames are drawn on.
+        clock (pg.time.Clock): Clock that caps the frame rate.
+
+    Example:
+        renderer = Renderer(config=config) dt = renderer.tick(60)
+    """
 
     def __init__(self, config: ConfigModel) -> None:
         """Initializes the renderer with configuration.
@@ -16,16 +27,19 @@ class Renderer:
         Args:
             config (ConfigModel): Pydantic-validated configuration model.
         """
+
         self.window_background_color = config.window.background_color
         self.margin_size = config.window.margin_size
         window_caption = config.window.caption
 
         pg.init()
 
-        self.screen_size = Size(*get_window_size_from_screen_resolution())
+        window_size = get_window_size_from_screen_resolution()
+        self.screen_size = Size(*window_size)
         self.screen = pg.display.set_mode(
             (self.screen_size.width, self.screen_size.height)
         )
+
         self.clock = pg.time.Clock()
 
         pg.display.set_caption(window_caption)
@@ -39,6 +53,7 @@ class Renderer:
         Returns:
             dt (float): Time in seconds elapsed since the last frame.
         """
+
         dt = self.clock.tick(fps) / 1000
 
         return dt
@@ -48,13 +63,12 @@ class Renderer:
 
         1. Fill the screen with the window background color.
         2. Flip the display buffer to show the frame.
-
-        Args:
-            grid (Grid): The grid whose cells will be drawn.
         """
+
         self.screen.fill(self.window_background_color)
         pg.display.flip()
 
     def quit(self) -> None:
         """Shuts down pygame."""
+
         pg.quit()

@@ -1,10 +1,20 @@
 """Module for running the main repository workflow."""
 
-from src.my_project.config_manager import ConfigManager
-from src.my_project.game import Game
+import logging
+
+from my_project.config_manager import ConfigManager
+from my_project.game import Game
+
 
 def main() -> None:
-    """Loads configuration and launches the pygame game window."""
+    """Load configuration and launch the pygame game window.
+
+    1. Configure logging.
+    2. Instantiate ConfigManager and load the config file.
+    3. Create the Game and run it until the window closes.
+    """
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
+
     config_manager = ConfigManager()
     config = config_manager.load_config_file()
 
