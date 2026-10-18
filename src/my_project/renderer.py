@@ -18,7 +18,8 @@ class Renderer:
         clock (pg.time.Clock): Clock that caps the frame rate.
 
     Example:
-        renderer = Renderer(config=config) dt = renderer.tick(60)
+        >>> renderer = Renderer(config=config)
+        >>> dt = renderer.tick(60)
     """
 
     def __init__(self, config: ConfigModel) -> None:

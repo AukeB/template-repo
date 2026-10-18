@@ -17,7 +17,8 @@ class Game:
         renderer (Renderer): Owns the pygame window and draws each frame.
 
     Example:
-        game = Game(config=config) game.run()
+        >>> game = Game(config=config)
+        >>> game.run()
     """
 
     def __init__(self, config: ConfigModel) -> None:
