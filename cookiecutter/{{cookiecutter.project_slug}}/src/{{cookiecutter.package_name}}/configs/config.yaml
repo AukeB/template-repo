@@ -1,0 +1,21 @@
+{% if cookiecutter.include_pygame -%}
+game:
+  fps: 60
+
+window:
+  caption: "My Project"
+  background_color: [100, 100, 100]
+  margin_size: 200 # Units: pixels.
+{% else -%}
+config_category_1:
+  float_param: 2.5
+  str_param: "hello"
+
+config_category_two:
+  int_param: 1
+  bool_param: true
+  list_param:
+    - "item1"
+    - "item2"
+    - "item3"
+{% endif -%}

@@ -1,0 +1,75 @@
+"""Module for pygame window setup and rendering."""
+
+import pygame as pg
+
+from {{ cookiecutter.package_name }}.config_model import ConfigModel
+from {{ cookiecutter.package_name }}.constants import Size
+from {{ cookiecutter.package_name }}.utils.utils_pygame import get_window_size_from_screen_resolution
+
+
+class Renderer:
+    """Manages the pygame window and draws each frame.
+
+    Attributes:
+        window_background_color (list[int]): RGB color that fills the window.
+        margin_size (int): Margin around the drawing area, in pixels.
+        screen_size (Size): Width and height of the window, in pixels.
+        screen (pg.Surface): The display surface that frames are drawn on.
+        clock (pg.time.Clock): Clock that caps the frame rate.
+
+    Example:
+        >>> renderer = Renderer(config=config)
+        >>> dt = renderer.tick(60)
+    """
+
+    def __init__(self, config: ConfigModel) -> None:
+        """Initializes the renderer with configuration.
+
+        Args:
+            config (ConfigModel): Pydantic-validated configuration model.
+        """
+
+        self.window_background_color = config.window.background_color
+        self.margin_size = config.window.margin_size
+        window_caption = config.window.caption
+
+        pg.init()
+
+        window_size = get_window_size_from_screen_resolution()
+        self.screen_size = Size(*window_size)
+        self.screen = pg.display.set_mode(
+            (self.screen_size.width, self.screen_size.height)
+        )
+
+        self.clock = pg.time.Clock()
+
+        pg.display.set_caption(window_caption)
+
+    def tick(self, fps: int) -> float:
+        """Advances the frame clock and reports the elapsed time.
+
+        Args:
+            fps (int): Target frames per second to cap the loop at.
+
+        Returns:
+            dt (float): Time in seconds elapsed since the last frame.
+        """
+
+        dt = self.clock.tick(fps) / 1000
+
+        return dt
+
+    def render(self) -> None:
+        """Draws the current frame and presents it to the display.
+
+        1. Fill the screen with the window background color.
+        2. Flip the display buffer to show the frame.
+        """
+
+        self.screen.fill(self.window_background_color)
+        pg.display.flip()
+
+    def quit(self) -> None:
+        """Shuts down pygame."""
+
+        pg.quit()
